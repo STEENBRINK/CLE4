@@ -1,14 +1,19 @@
-window.addEventListener("load", function () {
-    new Game();
-});
-var Game = /** @class */ (function () {
-    function Game() {
-        this.gameLoop();
-    }
-    Game.prototype.gameLoop = function () {
-        //update game elements
-        var _this = this;
-        requestAnimationFrame(function () { return _this.gameLoop(); });
-    };
-    return Game;
-}());
+var canvas;
+var ctx;
+function gameLoop() {
+    requestAnimationFrame(gameLoop);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 1920, 1080);
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 5;
+    ctx.arc(400, 400, 100, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
+}
+window.onload = function () {
+    canvas = document.getElementById('canvas');
+    ctx = canvas.getContext("2d");
+    gameLoop();
+};
