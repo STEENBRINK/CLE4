@@ -17,24 +17,25 @@ function preload() {
 
     game.load.image('box', 'assets/platformer/Tiles/box.png');
     game.load.image('background', 'assets/platformer/background1.png');
-    game.load.spritesheet('player', 'assets/platformer/Player/p1_walk/p1_walk.png', 66, 93);
+    game.load.spritesheet('player', 'assets/platformer/Final/characters1.png', 32, 23);
+    //game.load.spritesheet('player', 'assets/platformer/Player/p1_walk/p1_walk.png', 66, 93);
     game.load.image('ground', 'assets/platformer/grass-2400.png');
-    game.load.image('ground', 'assets/platformer/grass-2400.png');
+    game.load.spritesheet('dragon', 'assets/platformer/Final/dragon0.png', 173, 103);
 
 }
 
-var sprite;
-
 var player;
-var facing = 'left';
-var jumpTimer = 0;
+var facing = 'right';
+var jumpTimer = 0; 
 var cursors;
 var jumpButton;
 var yAxis = p2.vec2.fromValues(0, 1);
 var ground;
 var platforms;
+var dragon;
 
-const DEBUG = true;
+// Set this to false to remove rectangles around sprites
+const DEBUG = false;
 
 function create() {
     //  Set world borders
@@ -52,9 +53,17 @@ function create() {
 
     //  create player
     player = game.add.sprite(200, 200, 'player');
-    player.animations.add('left', [0, 1, 2, 3, 4], 20, true);
+    player.scale.setTo(2,2);
+    player.animations.add('left', [0, 1, 2, 3], 20, true);
     player.animations.add('turn', [0], 20, true);
-    player.animations.add('right', [0, 1, 2, 3, 4], 20, true);
+    player.animations.add('right', [0, 1, 2, 3], 20, true);
+
+    //  create dragon
+    dragon = game.add.sprite(500, 481, 'dragon');
+    dragon.animations.add('idle', [0, 1, 2], 5, true);
+    dragon.animations.play('idle')
+    dragon.anchor.setTo(.5,.5);
+    dragon.scale.x *= -1;
 
     // Create group for platforms and add ground
     platforms = game.add.group();
@@ -195,6 +204,7 @@ function render()
 {
     /*game.debug.cameraInfo(game.camera, 32, 32);
     game.debug.spriteCoords(player, 32, 500);*/	
+    game.debug.spriteBounds(player);
 
 }
 
