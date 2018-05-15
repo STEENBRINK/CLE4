@@ -1,11 +1,25 @@
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
+// tsc --watch -p {filename(tsconfig.json)}
+
+//TODO: player - up down left right
+//      platform
+//      physics
+//      scrolling
+//      enemies
+//      dragon
+//      background move
+//      camera move
+//      
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 
     game.load.image('box', 'assets/platformer/Tiles/box.png');
-    game.load.image('background', 'assets/platformer/background0.png');
+    game.load.image('background', 'assets/platformer/background1.png');
     game.load.spritesheet('player', 'assets/platformer/Player/p1_walk/p1_walk.png', 66, 93);
+    game.load.image('ground', 'assets/platformer/grass-2400.png');
+    game.load.image('ground', 'assets/platformer/grass-2400.png');
 
 }
 
@@ -17,44 +31,60 @@ var jumpTimer = 0;
 var cursors;
 var jumpButton;
 var yAxis = p2.vec2.fromValues(0, 1);
+var ground;
+var platforms;
+
+const DEBUG = true;
 
 function create() {
+    //  Set world borders
+    game.world.setBounds(0, 0, 1920, 1920);
 
-    bg = game.add.tileSprite(0, 0, 800, 600, 'background');
+    //  Set background
+    bg = game.add.tileSprite(0, -300, 3840, 1080, 'background');
 
     //  Enable p2 physics
     game.physics.startSystem(Phaser.Physics.P2JS);
-
-    game.physics.p2.gravity.y = 350;
+    game.physics.p2.setImpactEvents(true);
+    game.physics.p2.gravity.y = 750;
     game.physics.p2.world.defaultContactMaterial.friction = 0.3;
     game.physics.p2.world.setGlobalStiffness(1e5);
 
-    //  Add a sprite
+    //  create player
     player = game.add.sprite(200, 200, 'player');
-    player.animations.add('left', [0, 1, 2, 3, 4], 10, true);
-    player.animations.add('turn', [4], 20, true);
-    player.animations.add('right', [0, 1, 2, 3, 4], 10, true);
+    player.animations.add('left', [0, 1, 2, 3, 4], 20, true);
+    player.animations.add('turn', [0], 20, true);
+    player.animations.add('right', [0, 1, 2, 3, 4], 20, true);
 
-    //  Enable if for physics. This creates a default rectangular body.
-    game.physics.p2.enable(player);
-    
+    // Create group for platforms and add ground
+    platforms = game.add.group();
+    var groundSprite = game.add.sprite(1200, 600 - 35, 'ground')
+    ground = platforms.add(groundSprite);
+
+    //  Enable physics for player. This creates a default rectangular body.
+    game.physics.p2.enable(player, DEBUG);
     player.body.fixedRotation = true;
     player.body.damping = 0.5;
 
+    // Create materials, this manages things like friction, restitution(bouncy'ness)
     var spriteMaterial = game.physics.p2.createMaterial('spriteMaterial', player.body);
     var worldMaterial = game.physics.p2.createMaterial('worldMaterial');
     var boxMaterial = game.physics.p2.createMaterial('worldMaterial');
 
-    //  4 trues = the 4 faces of the world in left, right, top, bottom order
-    game.physics.p2.setWorldMaterial(worldMaterial, true, true, true, true);
+    // Give physics to ground and give it worldMaterial
+    game.physics.p2.enable(ground, DEBUG);
+    ground.body.static = true;
+    ground.body.setMaterial(worldMaterial);
 
-    //  A stack of boxes - you'll stick to these
-    for (var i = 1; i < 4; i++)
+    //  4 trues = the 4 faces of the world in left, right, top, bottom order
+    game.physics.p2.setWorldMaterial(worldMaterial, true, true, true, false);
+
+    //  A stack of boxes
+    for (var i = 0; i < 5; i++)
     {
-        var box = game.add.sprite(300, 645 - (95 * i), 'box');
-        game.physics.p2.enable(box);
+        var box = game.add.sprite(300, 500 - (80 * i), 'box');
+        game.physics.p2.enable(box, DEBUG);
         box.body.mass = 6;
-        // box.body.static = true;
         box.body.setMaterial(boxMaterial);
     }
 
@@ -66,42 +96,71 @@ function create() {
 
     //  Here are some more options you can set:
 
-    // contactMaterial.friction = 0.0;     // Friction to use in the contact of these two materials.
-    // contactMaterial.restitution = 0.0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
-    // contactMaterial.stiffness = 1e3;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
-    // contactMaterial.relaxation = 0;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
-    // contactMaterial.frictionStiffness = 1e7;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
-    // contactMaterial.frictionRelaxation = 3;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
-    // contactMaterial.surfaceVelocity = 0.0;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+    groundBoxesCM.friction = 5.0;     // Friction to use in the contact of these two materials.
+    //groundBoxesCM.restitution = 1.0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+    //groundBoxesCM.stiffness = 1e3;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+    //groundBoxesCM.relaxation = 0;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+    //groundBoxesCM.frictionStiffness = 1e7;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+    //groundBoxesCM.frictionRelaxation = 3;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+    //groundBoxesCM.surfaceVelocity = -1.0;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
 
-    text = game.add.text(20, 20, 'move with arrow, space to jump', { fill: '#ffffff' });
+    text = game.add.text(15, 15, 'move with arrow, space to jump', { fill: '#ffffff', fontSize: '18px' });
 
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+
+    game.camera.follow(player, 1, .5, 0);
 
 }
 
 function update() {
 
+    game.physics.arcade.collide(ground, player)
+
     if (cursors.left.isDown)
     {
         player.body.moveLeft(200);
+
+        //  Scroll the background
+        bg.tilePosition.x += .3;
 
         if (facing != 'left')
         {
             player.animations.play('left');
             facing = 'left';
+
+            if(player.scale.x > 0)
+                {
+                     // Set Anchor to the center of your sprite
+                    player.anchor.setTo(.5,.5);
+        
+                    // Invert scale.x to flip left/right
+                    player.scale.x *= -1;
+                }
         }
     }
     else if (cursors.right.isDown)
     {
         player.body.moveRight(200);
 
+        //  Scroll the background
+        bg.tilePosition.x -= .3;
+
         if (facing != 'right')
         {
             player.animations.play('right');
             facing = 'right';
+
+            if(player.scale.x < 0)
+                {
+                     // Set Anchor to the center of your sprite
+                    player.anchor.setTo(.5,.5);
+        
+                    // Invert scale.x to flip left/right
+                    player.scale.x *= -1;
+                }
         }
+
     }
     else
     {
@@ -117,7 +176,7 @@ function update() {
             }
             else
             {
-                player.frame = 5;
+                player.frame = 0;
             }
 
             facing = 'idle';
@@ -126,9 +185,16 @@ function update() {
     
     if (jumpButton.isDown && game.time.now > jumpTimer && checkIfCanJump())
     {
-        player.body.moveUp(300);
+        player.body.moveUp(600);
         jumpTimer = game.time.now + 750;
     }
+
+}
+
+function render()
+{
+    /*game.debug.cameraInfo(game.camera, 32, 32);
+    game.debug.spriteCoords(player, 32, 500);*/	
 
 }
 
