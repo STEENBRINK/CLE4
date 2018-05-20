@@ -21,18 +21,21 @@ function preload() {
     //game.load.spritesheet('player', 'assets/platformer/Player/p1_walk/p1_walk.png', 66, 93);
     game.load.image('ground', 'assets/platformer/grass-2400.png');
     game.load.spritesheet('dragon', 'assets/platformer/Final/dragon0.png', 173, 103);
+    game.load.spritesheet('swoosh', 'assets/platformer/Final/swoosh.png', 32, 32);
 
 }
 
 var player;
 var facing = 'right';
 var jumpTimer = 0; 
+var swooshTimer = 0;
 var cursors;
 var jumpButton;
 var yAxis = p2.vec2.fromValues(0, 1);
 var ground;
 var platforms;
 var dragon;
+var swoosh;
 
 // Set this to false to remove rectangles around sprites
 const DEBUG = false;
@@ -54,14 +57,14 @@ function create() {
     //  create player
     player = game.add.sprite(200, 200, 'player');
     player.scale.setTo(2,2);
-    player.animations.add('left', [0, 1, 2, 3], 20, true);
+    player.animations.add('left', [0, 1, 2, 4], 10, true);
     player.animations.add('turn', [0], 20, true);
-    player.animations.add('right', [0, 1, 2, 3], 20, true);
-
+    player.animations.add('right', [0, 1, 2, 4], 10, true);
+    
     //  create dragon
     dragon = game.add.sprite(500, 481, 'dragon');
     dragon.animations.add('idle', [0, 1, 2], 5, true);
-    dragon.animations.play('idle')
+    dragon.animations.play('idle');
     dragon.anchor.setTo(.5,.5);
     dragon.scale.x *= -1;
 
@@ -74,6 +77,8 @@ function create() {
     game.physics.p2.enable(player, DEBUG);
     player.body.fixedRotation = true;
     player.body.damping = 0.5;
+    player.anchor.setTo(.25,.5);
+    player.body.setRectangle(player.width / 2,player.height);
 
     // Create materials, this manages things like friction, restitution(bouncy'ness)
     var spriteMaterial = game.physics.p2.createMaterial('spriteMaterial', player.body);
@@ -117,6 +122,7 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    hitButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
     game.camera.follow(player, 1, .5, 0);
 
@@ -125,6 +131,19 @@ function create() {
 function update() {
 
     game.physics.arcade.collide(ground, player)
+
+    if(hitButton.isDown && game.time.now > swooshTimer)
+    {
+        //  create swoosh
+        swoosh = game.add.sprite(100, 100, 'swoosh');
+        swoosh.animations.add('hit', [0,1,2,3,], 10, false);
+
+        swoosh.x = player.body.x + 5;
+        swoosh.y = player.body.y - 10;
+        swoosh.animations.play('hit', 10, false, true);
+
+        swooshTimer = game.time.now + 700;
+    }
 
     if (cursors.left.isDown)
     {
@@ -140,9 +159,6 @@ function update() {
 
             if(player.scale.x > 0)
                 {
-                     // Set Anchor to the center of your sprite
-                    player.anchor.setTo(.5,.5);
-        
                     // Invert scale.x to flip left/right
                     player.scale.x *= -1;
                 }
@@ -162,9 +178,6 @@ function update() {
 
             if(player.scale.x < 0)
                 {
-                     // Set Anchor to the center of your sprite
-                    player.anchor.setTo(.5,.5);
-        
                     // Invert scale.x to flip left/right
                     player.scale.x *= -1;
                 }
@@ -203,8 +216,8 @@ function update() {
 function render()
 {
     /*game.debug.cameraInfo(game.camera, 32, 32);
-    game.debug.spriteCoords(player, 32, 500);*/	
-    game.debug.spriteBounds(player);
+    game.debug.spriteCoords(player, 32, 500);
+    game.debug.spriteBounds(player);*/	
 
 }
 
