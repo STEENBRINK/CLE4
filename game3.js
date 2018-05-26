@@ -16,12 +16,17 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
 
     game.load.image('box', 'assets/platformer/Tiles/box.png');
+    
     game.load.image('background', 'assets/platformer/background1.png');
     game.load.spritesheet('player', 'assets/platformer/Final/characters1.png', 32, 23);
-    //game.load.spritesheet('player', 'assets/platformer/Player/p1_walk/p1_walk.png', 66, 93);
     game.load.image('ground', 'assets/platformer/grass-2400.png');
     game.load.spritesheet('dragon', 'assets/platformer/Final/dragon0.png', 173, 103);
     game.load.spritesheet('swoosh', 'assets/platformer/Final/swoosh.png', 32, 32);
+
+    game.load.tilemap('lvl1', 'levels/lvl1.json', null, Phaser.Tilemap.TILED_JSON);
+
+    //  Next we load the tileset. This is just an image, loaded in via the normal way we load images:
+    game.load.image('tiles', 'assets/platformer/Final/Kenney_Full/Base pack/Tiles/tiles_spritesheet.png');
 
 }
 
@@ -36,6 +41,8 @@ var ground;
 var platforms;
 var dragon;
 var swoosh;
+var map;
+var layer;
 
 // Set this to false to remove rectangles around sprites
 const DEBUG = false;
@@ -46,6 +53,21 @@ function create() {
 
     //  Set background
     bg = game.add.tileSprite(0, -300, 3840, 1080, 'background');
+
+    
+    //  The 'mario' key here is the Loader key given in game.load.tilemap
+    map = game.add.tilemap('lvl1');
+
+    //  The first parameter is the tileset name, as specified in the Tiled map editor (and in the tilemap json file)
+    //  The second parameter maps this name to the Phaser.Cache key 'tiles'
+    map.addTilesetImage('tiles_spritesheet', 'tiles');
+    
+    //  Creates a layer from the World1 layer in the map data.
+    //  A Layer is effectively like a Phaser.Sprite, so is added to the display list.
+    layer = map.createLayer('TileLayer1');
+
+    //  This resizes the game world to match the layer dimensions
+    layer.resizeWorld();
 
     //  Enable p2 physics
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -86,9 +108,9 @@ function create() {
     var boxMaterial = game.physics.p2.createMaterial('worldMaterial');
 
     // Give physics to ground and give it worldMaterial
-    game.physics.p2.enable(ground, DEBUG);
+    /*game.physics.p2.enable(ground, DEBUG);
     ground.body.static = true;
-    ground.body.setMaterial(worldMaterial);
+    ground.body.setMaterial(worldMaterial);*/
 
     //  4 trues = the 4 faces of the world in left, right, top, bottom order
     game.physics.p2.setWorldMaterial(worldMaterial, true, true, true, false);
@@ -110,13 +132,13 @@ function create() {
 
     //  Here are some more options you can set:
 
-    groundBoxesCM.friction = 5.0;     // Friction to use in the contact of these two materials.
-    //groundBoxesCM.restitution = 1.0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
-    //groundBoxesCM.stiffness = 1e3;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
-    //groundBoxesCM.relaxation = 0;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+    groundBoxesCM.friction = 5.0;               // Friction to use in the contact of these two materials.
+    //groundBoxesCM.restitution = 1.0;          // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+    //groundBoxesCM.stiffness = 1e3;            // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+    //groundBoxesCM.relaxation = 0;             // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
     //groundBoxesCM.frictionStiffness = 1e7;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
     //groundBoxesCM.frictionRelaxation = 3;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
-    //groundBoxesCM.surfaceVelocity = -1.0;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+    //groundBoxesCM.surfaceVelocity = -1.0;     // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
 
     text = game.add.text(15, 15, 'move with arrow, space to jump', { fill: '#ffffff', fontSize: '18px' });
 
@@ -129,8 +151,6 @@ function create() {
 }
 
 function update() {
-
-    game.physics.arcade.collide(ground, player)
 
     if(hitButton.isDown && game.time.now > swooshTimer)
     {
@@ -217,7 +237,7 @@ function render()
 {
     /*game.debug.cameraInfo(game.camera, 32, 32);
     game.debug.spriteCoords(player, 32, 500);
-    game.debug.spriteBounds(player);*/	
+    game.debug.spriteBounds(player);	*/
 
 }
 
