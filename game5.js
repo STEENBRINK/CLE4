@@ -48,79 +48,38 @@ var layer;
 const DEBUG = false;
 
 function create() {
-    
-
-    game.physics.startSystem(Phaser.Physics.P2JS);
-
-    game.stage.backgroundColor = '#2d2d2d';
-
-    map = game.add.tilemap('map');
-
-    map.addTilesetImage('tiles');
-
-    layer = map.createLayer('layer1');
-
-    layer.resizeWorld();
-
-    //  Set the tiles for collision.
-    //  Do this BEFORE generating the p2 bodies below.
-    map.setCollisionBetween(1, 150);
-
-    //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
-    //  This call returns an array of body objects which you can perform addition actions on if
-    //  required. There is also a parameter to control optimising the map build.
-    game.physics.p2.convertTilemap(map, layer);
-
-    player = game.add.sprite(200, 200, 'player');
-    game.physics.p2.enable(player);
-
-    game.camera.follow(player);
-
-    //  By default the player will collide with the World bounds,
-    //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
-    //  you need to rebuild the physics world boundary as well. The following
-    //  line does that. The first 4 parameters control if you need a boundary on the left, right, top and bottom of your world.
-    //  The final parameter (false) controls if the boundary should use its own collision group or not. In this case we don't require
-    //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
-    game.physics.p2.setBoundsToWorld(true, true, true, true, false);
-
-    //  Even after the world boundary is set-up you can still toggle if the player collides or not with this:
-    // player.body.collideWorldBounds = false;
-
-    cursors = game.input.keyboard.createCursorKeys();
-
 
     //  Enable p2 physics
-    /*game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.setImpactEvents(true);
     game.physics.p2.gravity.y = 750;
     game.physics.p2.world.defaultContactMaterial.friction = 0.3;
     game.physics.p2.world.setGlobalStiffness(1e5);
 
     //  Set world borders
-    game.world.setBounds(0, 0, 1920, 1920);
+    game.world.setBounds(0, 0, 100*70, 720);
 
     //  Set background
     bg = game.add.tileSprite(0, -300, 3840, 1080, 'background');
 
     
-    //  The 'mario' key here is the Loader key given in game.load.tilemap
-    map = game.add.tilemap('lvl1');
+    map = game.add.tilemap('map');
 
-    //  The first parameter is the tileset name, as spe0cified in the Tiled map editor (and in the tilemap json file)
-    //  The second parameter maps this name to the Phaser.Cache key 'tiles'
     map.addTilesetImage('tiles_spritesheet', 'tiles');
-    
-    //  Creates a layer from the World1 layer in the map data.
-    //  A Layer is effectively like a Phaser.Sprite, so is added to the display list.
-    layer = map.createLayer('layer1'6);
 
-    //  This resizes the game world to match the layer dimensions
-    layer.resizeWorld();
+    layer = map.createLayer('layer1');
 
-    map.setCollisionBetween(0, 150, true, layer);
+    //layer.resizeWorld();
 
-    game.physics.p2.convertTilemap(map, layer);
+    //  Set the tiles for collision.
+    //  Do this BEFORE generating the p2 bodies below.
+    map.setCollisionBetween(0, 150);
+    map.setCollisionByIndex(103);
+
+    //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
+    //  This call returns an array of body objects which you can perform addition actions on if
+    //  required. There is also a parameter to control optimising the map build.
+    console.log(game.physics.p2.convertTilemap(map, layer));
 
 
    //  create player
@@ -184,36 +143,16 @@ function create() {
    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
    hitButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
-   game.camera.follow(player, 1, .5, 0);*/
+   game.camera.follow(player, 1, .5, 0);
 
 }
 
 function update() 
 {
+    game.physics.arcade.collide(player, map);
 
-    if (cursors.left.isDown)
-    {
-        player.body.rotateLeft(100);
-    }
-    else if (cursors.right.isDown)
-    {
-        player.body.rotateRight(100);
-    }
-    else
-    {
-        player.body.setZeroRotation();
-    }
 
-    if (cursors.up.isDown)
-    {
-        player.body.thrust(400);
-    }
-    else if (cursors.down.isDown)
-    {
-        player.body.reverse(400);
-    }
-
-    /*if(hitButton.isDown && game.time.now > swooshTimer)
+    if(hitButton.isDown && game.time.now > swooshTimer)
     {
         //  create swoosh
         swoosh = game.add.sprite(100, 100, 'swoosh');
@@ -290,7 +229,7 @@ function update()
     {
         player.body.moveUp(600);
         jumpTimer = game.time.now + 750;
-    }*/
+    }
 
 }
 
