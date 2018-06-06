@@ -1,0 +1,53 @@
+background{
+    width:100%;
+    height: 100%;
+}
+
+backLayer, frontLayer, frontLayer2{
+    width:100%;
+    height:100%;
+    background-size: cover;
+}
+
+backgroundCellLarge, backgroundCellMedium, backgroundCellSmall {   
+    position:absolute;   
+}
+
+backgroundCellLarge{
+    width:75px;
+    height:75px;   
+}
+
+backgroundCellMedium {   
+    width: 50px;
+    height: 50px;
+}
+
+backgroundCellSmall {    
+    width:25px;
+    height:25px;
+}
+
+@keyframes backgroundCellMove {
+    from {
+        left: 100%;
+    }
+    
+    to {
+        left: -75px;
+    }
+}
+
+@keyframes changeFrontLayer{
+    0%{
+        
+    }
+
+    80%{
+        -webkit-filter: hue-rotate();
+    }
+    
+    100%{
+        -webkit-filter: hue-rotate(120deg);
+    }
+}

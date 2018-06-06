@@ -1,0 +1,89 @@
+@font-face {
+    font-family: foo;
+    src: url("../../fonts/foo.ttf");
+}
+
+#feedback{
+    background-image: url("../../images/interface/icons/good-job.png");
+    top: 14%;
+    margin-left: -145px!important;
+    width: 290px;
+    height:60px;
+}
+
+#score{
+    top: 20%;
+    background-image: url("../../images/interface/icons/score.png");
+    background-position: left bottom;
+    height: 197px;
+    font-size: 180px;
+}
+
+#tryAgain{
+    top: 50%;
+    background-image: url("../../images/interface/icons/try-again.png");
+    margin-left: -301.64px!important;
+    width: 603px;
+    height: 84px;
+}
+
+#feedback, #tryAgain{
+    left:50%;
+}
+
+#total, #resetGame, #stopGame{
+    color: #b6ff00;
+    font-family: foo;
+    text-shadow: 0px 0px 60px black;
+}
+
+#resetGame, #stopGame{
+    top: 59%;
+}
+
+#resetGame{
+    margin-left: -36.2px!important;
+    left: 45%;
+    width: 82px;
+    height: 66px;
+    background-image: url("../../images/interface/icons/yes-button.png");
+}
+
+#stopGame{
+    margin-left: -53.7px!important;
+    background-image: url("../../images/interface/icons/no-button.png");
+    left: 55%;
+    width: 107px;
+    height: 69px;
+}
+
+#resetGame:hover, #stopGame:hover{
+    cursor: pointer;
+}
+
+#resetGame:hover{
+    background-image: url("../../images/interface/icons/yes-button-hover.png");
+}
+
+#stopGame:hover{
+    background-image: url("../../images/interface/icons/no-button-hover.png");
+}
+
+#score-container {
+    height: 250px;
+    top: 15%;
+}
+
+#score {
+    width: 570px;
+}
+
+#total {
+    top: 32%;
+    font-size: 180px;
+}
+
+#total-container {
+    height: 180px;
+    left: 584px;
+}

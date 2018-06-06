@@ -1,0 +1,13 @@
+@keyframes characterSelectMove{
+    0% {
+        top: 27%;
+    }
+    
+    50% {
+        top: 23%;
+    }
+    
+    100% {
+        top: 27%;
+    }
+}

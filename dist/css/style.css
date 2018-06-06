@@ -1,0 +1,30 @@
+@import url("background.css");
+@import url("titlescreen.css");
+@import url("characterselect.css");
+@import url("character.css");
+@import url("life.css");
+@import url("virus.css");
+@import url("gameover.css");
+@import url("bacteria.css");
+
+
+body {
+    background-color: #70CF51;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+    margin:0px; padding:0px;
+}
+
+body * {
+    position: absolute;
+    display: block;
+    margin:0px; padding:0px;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+}
+
+score{
+    color: #b6ff00;
+    font-family: foo;
+    text-shadow: 0px 0px 60px black;
+}

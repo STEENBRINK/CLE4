@@ -1,0 +1,60 @@
+#character1 {
+    z-index: 99;
+}
+
+#character1Body {
+    background-image: url('../../images/player/player.png');
+    background-repeat: no-repeat;
+    width: 200px;
+    height:200px;
+}
+
+#character1Mouth {
+    background-image: url('../../images/player/mouth1.png');
+    background-repeat: no-repeat;
+    width: 200px;
+    height:200px;
+}
+
+#character1Glasses {
+    background-repeat: no-repeat;
+    width: 200px;
+    height:200px;
+}
+
+#character2 {
+    z-index: 99;
+}
+
+#character2Body {
+    background-image: url('../../images/player/player.png');
+    background-repeat: no-repeat;
+    width: 200px;
+    height:200px;
+}
+
+#character2Mouth {
+    background-image: url('../../images/player/mouth1.png');
+    background-repeat: no-repeat;
+    width: 200px;
+    height:200px;
+}
+
+#character2Glasses {
+    background-repeat: no-repeat;
+    width: 200px;
+    height:200px;
+}
+
+backButton{
+    width: 287px;
+    height: 110px;
+    left: 2%;
+    background-image: url('../../images/interface/icons/back.png');
+    top: 80%;
+    cursor: pointer;
+}
+
+backButton:hover{
+    background-image: url('../../images/interface/icons/back-hover.png');
+}
