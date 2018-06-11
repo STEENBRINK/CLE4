@@ -1,7 +1,7 @@
 //Create a new background with 3 layers
 class Background {
     
-    private backgroundCells:backgroundCells;
+    private backgroundItems:backgroundItems;
     public animation: boolean;
     
     //Use the parameters to choose background images (back & front layer)
@@ -31,13 +31,13 @@ class Background {
     //Create the mid layer images (animated bloodcells)
     midLayer(){
         //Create far range bloodcells (small size & low speed)
-        this.backgroundCells = new backgroundCells(26,36, "backgroundCellSmall", "small");
+        this.backgroundItems = new backgroundItems(26,36, "backgroundItemsmall", "small");
          
         //Create mid range bloodcells (mid size & mid speed)
-        this.backgroundCells = new backgroundCells(16,26, "backgroundCellMedium", "medium");
+        this.backgroundItems = new backgroundItems(16,26, "backgroundCellMedium", "medium");
          
         //Create close range bloodcells (big sized & fast speed)
-        this.backgroundCells = new backgroundCells(6,16, "backgroundCellLarge", "large");        
+        this.backgroundItems = new backgroundItems(6,16, "backgroundCellLarge", "large");        
     }
         
     //Create front layer image (transparent second background image)

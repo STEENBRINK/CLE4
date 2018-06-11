@@ -1,7 +1,7 @@
 /**
  * backgroundCells
  */
-class backgroundCells {
+class backgroundItems {
     
     private start:number;
     private end:number;
@@ -14,19 +14,19 @@ class backgroundCells {
          this.size = size;
          
          for (var i = this.start; i < this.end; i++) {
-            let backgroundCell = document.createElement(div);
+            let backgroundItem = document.createElement(div);
             let randomImage = Math.floor(Math.random()*15 + 1);
             let positionX = window.innerWidth;
             let randomPositionY = Math.floor(Math.random()*window.innerHeight);
             let randomAnimationSpeed = i;
             
-            backgroundCell.style.backgroundImage = "url(\"../images/backgrounds/cell" + randomImage + this.size +".png\")";
-            backgroundCell.style.transform = "translatez(0)";
-            backgroundCell.style.left = positionX + "px";
-            backgroundCell.style.top = randomPositionY + "px";
-            backgroundCell.style.animation = "backgroundCellMove " + randomAnimationSpeed + "s linear infinite";
+            backgroundItem.style.backgroundImage = "url(\"../images/backgrounds/cell" + randomImage + this.size +".png\")";
+            backgroundItem.style.transform = "translatez(0)";
+            backgroundItem.style.left = positionX + "px";
+            backgroundItem.style.top = randomPositionY + "px";
+            backgroundItem.style.animation = "backgroundItemMove " + randomAnimationSpeed + "s linear infinite";
             
-            document.getElementById("background").appendChild(backgroundCell);       
+            document.getElementById("background").appendChild(backgroundItem);       
         }
     }
 }
