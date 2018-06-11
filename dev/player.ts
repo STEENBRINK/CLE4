@@ -51,8 +51,8 @@ class Player extends GameObject {
 
     }
     
-    public hitsVirus(virus: Virus){
-        if(this.rectangle.hitsOtherRectangle(virus.rectangle)){
+    public FireDragon(fireDragon: FireDragon){
+        if(this.rectangle.hitsOtherRectangle(fireDragon.rectangle)){
             return true;
             
         }

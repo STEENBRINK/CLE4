@@ -2,15 +2,14 @@
 
 
 /**
- * Bacteria
+ * Ice Dragon
  */
-class Bacteria extends Enemy{
+class IceDragon extends Enemy{
     
     public id: number;
     public hitbox: Rectangle;
     public hitboxPosition: Vector;
     public rectanglePosition: Vector;
-    public splitBacteria;
     public counter = 300;
     private random:number;
     public div:HTMLElement;
@@ -18,8 +17,8 @@ class Bacteria extends Enemy{
     constructor(id: number, pos: Vector) {
         super(pos);
         this.id = id;
-        this.div = document.createElement("bacteria");
-        this.div.setAttribute("id", "bacteria" + this.id);
+        this.div = document.createElement("icedragon");
+        this.div.setAttribute("id", "icedragon" + this.id);
         this.div.style.transform = "translatez(0)";
         document.getElementById("background").appendChild(this.div);
 

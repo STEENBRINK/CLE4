@@ -28,16 +28,16 @@ class Background {
         document.getElementById("background").appendChild(backLayer);
     }
         
-    //Create the mid layer images (animated bloodcells)
+    //Create the mid layer images (animated backgrounditems)
     midLayer(){
-        //Create far range bloodcells (small size & low speed)
+        //Create far range items (small size & low speed)
         this.backgroundItems = new backgroundItems(26,36, "backgroundItemsmall", "small");
          
-        //Create mid range bloodcells (mid size & mid speed)
-        this.backgroundItems = new backgroundItems(16,26, "backgroundCellMedium", "medium");
+        //Create mid range items (mid size & mid speed)
+        this.backgroundItems = new backgroundItems(16,26, "backgroundItemMedium", "medium");
          
-        //Create close range bloodcells (big sized & fast speed)
-        this.backgroundItems = new backgroundItems(6,16, "backgroundCellLarge", "large");        
+        //Create close range items (big sized & fast speed)
+        this.backgroundItems = new backgroundItems(6,16, "backgroundItemLarge", "large");        
     }
         
     //Create front layer image (transparent second background image)

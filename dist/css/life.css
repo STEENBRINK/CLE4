@@ -1,11 +1,11 @@
-redBloodCell {
+backgrounditem {
     background-image: url(../../images/characters/red1.png);
     background-repeat: no-repeat;
     width: 75px;
     height:75px;
 }
 
-@keyframes redBloodCellMove{
+@keyframes backgroundItemMove{
     0% {
         top: 27%;
     }

@@ -1,7 +1,7 @@
 /**
- * Virus
+ * Fire Dragon
  */
-class Virus extends Enemy {
+class FireDragon extends Enemy {
 
     public id: number;
     public hitbox: Rectangle;
@@ -12,8 +12,8 @@ class Virus extends Enemy {
     constructor(id: number, pos: Vector) {
         super(pos);
         this.id = id;
-        this.div = document.createElement("virus");
-        this.div.setAttribute("id", "virus" + this.id);
+        this.div = document.createElement("firedragon");
+        this.div.setAttribute("id", "firedragon" + this.id);
         this.div.style.transform = "translatez(0)";
         document.getElementById("background").appendChild(this.div);
 
