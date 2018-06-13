@@ -9,7 +9,7 @@ backLayer, frontLayer, frontLayer2{
     background-size: cover;
 }
 
-backgroundItemLarge, backgroundItemMedium, backgroundItemSmall {   
+backgroundItemLarge, backgroundItemMedium, backgroundItemsmall {   
     position:absolute;   
 }
 

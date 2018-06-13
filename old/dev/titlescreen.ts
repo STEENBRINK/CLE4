@@ -95,7 +95,6 @@ class Titlescreen {
     
     titleAnimation(){    
         
-        //Create far range image with animation (white cell chase)
         var titleChaseFar = document.createElement('titleChaseFar');
         titleChaseFar.setAttribute("id", "titleChaseFar");
         titleChaseFar.style.backgroundImage = "url(\"../images/titlescreen/titleChaseFar.png\")";
@@ -119,7 +118,6 @@ class Titlescreen {
         title1.style.animation = "title1Move 20s infinite";
         document.getElementById("background").appendChild(title1);
         
-        //Create close range image with animation (white cell chase)
         var titleChaseClose = document.createElement('titleChaseClose');
         var positionX = window.innerWidth;
         titleChaseClose.style.backgroundImage = "url(\"../images/titlescreen/titleChaseClose.png\")";

@@ -1,5 +1,5 @@
 /**
- * backgroundCells
+ * backgroundItems
  */
 class backgroundItems {
     
@@ -20,7 +20,7 @@ class backgroundItems {
             let randomPositionY = Math.floor(Math.random()*window.innerHeight);
             let randomAnimationSpeed = i;
             
-            backgroundItem.style.backgroundImage = "url(\"../images/backgrounds/cell" + randomImage + this.size +".png\")"; //TODO rename
+            backgroundItem.style.backgroundImage = "url(\"../images/backgrounds/villager" + randomImage + this.size +".png\")"; //TODO rename
             backgroundItem.style.transform = "translatez(0)";
             backgroundItem.style.left = positionX + "px";
             backgroundItem.style.top = randomPositionY + "px";
