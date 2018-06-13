@@ -27,9 +27,9 @@ var Background = (function () {
         document.getElementById("background").appendChild(backLayer);
     };
     Background.prototype.midLayer = function () {
-        this.backgroundCells = new backgroundCells(26, 36, "backgroundCellSmall", "small");
-        this.backgroundCells = new backgroundCells(16, 26, "backgroundCellMedium", "medium");
-        this.backgroundCells = new backgroundCells(6, 16, "backgroundCellLarge", "large");
+        this.backgroundItems = new backgroundItems(26, 36, "backgroundItemsmall", "small");
+        this.backgroundItems = new backgroundItems(16, 26, "backgroundItemMedium", "medium");
+        this.backgroundItems = new backgroundItems(6, 16, "backgroundItemLarge", "large");
     };
     Background.prototype.frontLayer = function (frontLayerImage, animation) {
         var frontLayer = document.createElement("frontLayer");
@@ -42,26 +42,26 @@ var Background = (function () {
     };
     return Background;
 }());
-var backgroundCells = (function () {
-    function backgroundCells(start, end, div, size) {
+var backgroundItems = (function () {
+    function backgroundItems(start, end, div, size) {
         this.start = start;
         this.end = end;
         this.size = size;
         for (var i = this.start; i < this.end; i++) {
-            var backgroundCell = document.createElement(div);
+            var backgroundItem = document.createElement(div);
             var randomImage = Math.floor(Math.random() * 15 + 1);
             var positionX = window.innerWidth;
             var randomPositionY = Math.floor(Math.random() * window.innerHeight);
             var randomAnimationSpeed = i;
-            backgroundCell.style.backgroundImage = "url(\"../images/backgrounds/cell" + randomImage + this.size + ".png\")";
-            backgroundCell.style.transform = "translatez(0)";
-            backgroundCell.style.left = positionX + "px";
-            backgroundCell.style.top = randomPositionY + "px";
-            backgroundCell.style.animation = "backgroundCellMove " + randomAnimationSpeed + "s linear infinite";
-            document.getElementById("background").appendChild(backgroundCell);
+            backgroundItem.style.backgroundImage = "url(\"../images/backgrounds/cell" + randomImage + this.size + ".png\")";
+            backgroundItem.style.transform = "translatez(0)";
+            backgroundItem.style.left = positionX + "px";
+            backgroundItem.style.top = randomPositionY + "px";
+            backgroundItem.style.animation = "backgroundItemMove " + randomAnimationSpeed + "s linear infinite";
+            document.getElementById("background").appendChild(backgroundItem);
         }
     }
-    return backgroundCells;
+    return backgroundItems;
 }());
 var GameObject = (function () {
     function GameObject(pos) {
@@ -72,73 +72,6 @@ var GameObject = (function () {
     };
     return GameObject;
 }());
-var Enemy = (function (_super) {
-    __extends(Enemy, _super);
-    function Enemy(pos) {
-        return _super.call(this, pos) || this;
-    }
-    Enemy.prototype.randomPosition = function () {
-        var random = Math.floor(Math.random() * 4) + 1;
-        if (random == 1) {
-            var x = -125;
-            var y = Math.floor(Math.random() * window.innerHeight);
-            return new Vector(x, y);
-        }
-        else if (random == 2) {
-            var x = window.innerWidth + 125;
-            var y = Math.floor(Math.random() * window.innerHeight + 125);
-            return new Vector(x, y);
-        }
-        else if (random == 3) {
-            var x = Math.floor(Math.random() * window.innerWidth);
-            var y = -125;
-            return new Vector(x, y);
-        }
-        else if (random == 4) {
-            var x = Math.floor(Math.random() * window.innerWidth - 125);
-            var y = window.innerHeight + 125;
-            return new Vector(x, y);
-        }
-    };
-    Enemy.prototype.hitsLife = function (life) {
-        if (this.rectangle.hitsOtherRectangle(life.rectangle)) {
-            return true;
-        }
-    };
-    Enemy.prototype.remove = function () {
-        this.div.remove();
-    };
-    return Enemy;
-}(GameObject));
-var Bacteria = (function (_super) {
-    __extends(Bacteria, _super);
-    function Bacteria(id, pos) {
-        var _this = _super.call(this, pos) || this;
-        _this.counter = 300;
-        _this.id = id;
-        _this.div = document.createElement("bacteria");
-        _this.div.setAttribute("id", "bacteria" + _this.id);
-        _this.div.style.transform = "translatez(0)";
-        document.getElementById("background").appendChild(_this.div);
-        _this.div.style.transform = "translate(" + _this.position.x + "px, " + _this.position.y + "px)";
-        _this.random = Math.floor((Math.random() * 5) + 3);
-        var random = Math.floor(Math.random() * 60);
-        _this.counter = _this.counter - random;
-        return _this;
-    }
-    Bacteria.prototype.move = function (life) {
-        this.direction = life.position.difference(this.position);
-        this.direction = this.direction.normalize();
-        this.direction = this.direction.scale(this.random / 7);
-        this.position = this.position.add(this.direction);
-        this.div.style.transform = "translate(" + this.position.x + "px, " + this.position.y + "px)";
-        this.rectanglePosition = new Vector(this.position.x + 25, this.position.y + 50);
-        this.rectangle = new Rectangle(this.rectanglePosition, 150, 100);
-        this.hitboxPosition = new Vector(this.position.x + 50, this.position.y + 50);
-        this.hitbox = new Rectangle(this.hitboxPosition, 400, 400);
-    };
-    return Bacteria;
-}(Enemy));
 var glasses1Scale;
 var glasses2Scale;
 var Player = (function (_super) {
@@ -161,8 +94,8 @@ var Player = (function (_super) {
         window.addEventListener("keyup", _this.onKeyUp.bind(_this));
         return _this;
     }
-    Player.prototype.hitsVirus = function (virus) {
-        if (this.rectangle.hitsOtherRectangle(virus.rectangle)) {
+    Player.prototype.FireDragon = function (fireDragon) {
+        if (this.rectangle.hitsOtherRectangle(fireDragon.rectangle)) {
             return true;
         }
     };
@@ -695,6 +628,72 @@ var CharacterSelect = (function () {
     };
     return CharacterSelect;
 }());
+var Enemy = (function (_super) {
+    __extends(Enemy, _super);
+    function Enemy(pos) {
+        return _super.call(this, pos) || this;
+    }
+    Enemy.prototype.randomPosition = function () {
+        var random = Math.floor(Math.random() * 4) + 1;
+        if (random == 1) {
+            var x = -125;
+            var y = Math.floor(Math.random() * window.innerHeight);
+            return new Vector(x, y);
+        }
+        else if (random == 2) {
+            var x = window.innerWidth + 125;
+            var y = Math.floor(Math.random() * window.innerHeight + 125);
+            return new Vector(x, y);
+        }
+        else if (random == 3) {
+            var x = Math.floor(Math.random() * window.innerWidth);
+            var y = -125;
+            return new Vector(x, y);
+        }
+        else if (random == 4) {
+            var x = Math.floor(Math.random() * window.innerWidth - 125);
+            var y = window.innerHeight + 125;
+            return new Vector(x, y);
+        }
+    };
+    Enemy.prototype.hitsLife = function (life) {
+        if (this.rectangle.hitsOtherRectangle(life.rectangle)) {
+            return true;
+        }
+    };
+    Enemy.prototype.remove = function () {
+        this.div.remove();
+    };
+    return Enemy;
+}(GameObject));
+var FireDragon = (function (_super) {
+    __extends(FireDragon, _super);
+    function FireDragon(id, pos) {
+        var _this = _super.call(this, pos) || this;
+        _this.counter = 300;
+        _this.id = id;
+        _this.div = document.createElement("firedragon");
+        _this.div.setAttribute("id", "firedragon" + _this.id);
+        _this.div.style.transform = "translatez(0)";
+        document.getElementById("background").appendChild(_this.div);
+        _this.position = _this.randomPosition();
+        _this.div.style.transform = "translate(" + _this.position.x + "px, " + _this.position.y + "px)";
+        _this.random = (Math.random() * 1.5) + 0.5;
+        return _this;
+    }
+    FireDragon.prototype.move = function (life) {
+        this.direction = life.position.difference(this.position);
+        this.direction = this.direction.normalize();
+        this.direction = this.direction.scale(this.random);
+        this.position = this.position.add(this.direction);
+        this.div.style.transform = "translate(" + this.position.x + "px, " + this.position.y + "px)";
+        this.rectanglePosition = new Vector(this.position.x + 50, this.position.y + 50);
+        this.rectangle = new Rectangle(this.position, 75, 75);
+        this.hitboxPosition = new Vector(this.position.x + 50, this.position.y + 50);
+        this.hitbox = new Rectangle(this.hitboxPosition, 300, 300);
+    };
+    return FireDragon;
+}(Enemy));
 var Game = (function () {
     function Game() {
         new Titlescreen();
@@ -763,13 +762,42 @@ var GameOver = (function () {
     };
     return GameOver;
 }());
-var bacteriaCount = 0;
+var IceDragon = (function (_super) {
+    __extends(IceDragon, _super);
+    function IceDragon(id, pos) {
+        var _this = _super.call(this, pos) || this;
+        _this.counter = 300;
+        _this.id = id;
+        _this.div = document.createElement("icedragon");
+        _this.div.setAttribute("id", "icedragon" + _this.id);
+        _this.div.style.transform = "translatez(0)";
+        document.getElementById("background").appendChild(_this.div);
+        _this.div.style.transform = "translate(" + _this.position.x + "px, " + _this.position.y + "px)";
+        _this.random = Math.floor((Math.random() * 5) + 3);
+        var random = Math.floor(Math.random() * 60);
+        _this.counter -= random;
+        return _this;
+    }
+    IceDragon.prototype.move = function (life) {
+        this.direction = life.position.difference(this.position);
+        this.direction = this.direction.normalize();
+        this.direction = this.direction.scale(this.random / 7);
+        this.position = this.position.add(this.direction);
+        this.div.style.transform = "translate(" + this.position.x + "px, " + this.position.y + "px)";
+        this.rectanglePosition = new Vector(this.position.x + 25, this.position.y + 50);
+        this.rectangle = new Rectangle(this.rectanglePosition, 150, 100);
+        this.hitboxPosition = new Vector(this.position.x + 50, this.position.y + 50);
+        this.hitbox = new Rectangle(this.hitboxPosition, 400, 400);
+    };
+    return IceDragon;
+}(Enemy));
+var iceDragonCount = 0;
 var Level1 = (function () {
     function Level1(playerCount) {
         this.lifes = new Array();
-        this.viruses = new Array();
-        this.bacteria = new Array();
-        this.virusCount = 0;
+        this.fireDragons = new Array();
+        this.iceDragons = new Array();
+        this.fireDragonCount = 0;
         this.scoreCount = 0;
         this.enemy = new Enemy(new Vector(0, 0));
         this.playerCount = playerCount;
@@ -790,37 +818,37 @@ var Level1 = (function () {
             for (var i = 0; i < 10; i++) {
                 this.lifes.push(new Life(i));
             }
-            this.spawnTimer(this.spawnVirus, this.spawnTime);
+            this.spawnTimer(this.spawnFireDragon, this.spawnTime);
             this.char1 = new Character(37, 39, 38, 40, new Vector(500, 500), 1);
         }
         else {
             for (var i = 0; i < 5; i++) {
                 this.lifes.push(new Life(i));
             }
-            this.timer = setInterval(this.spawnVirus.bind(this), 750);
+            this.timer = setInterval(this.spawnFireDragon.bind(this), 750);
             this.char1 = new Character(37, 39, 38, 40, new Vector(1500, 1500), 1);
             this.char2 = new Character(65, 68, 87, 83, new Vector(1500, 1500), 2);
         }
         requestAnimationFrame(this.gameLoop.bind(this));
     }
-    Level1.prototype.spawnVirus = function () {
+    Level1.prototype.spawnFireDragon = function () {
         var random = Math.floor(Math.random() * 10);
         if (random <= 7) {
-            this.viruses.push(new Virus(this.virusCount, this.enemy.randomPosition()));
-            this.virusCount++;
+            this.fireDragons.push(new FireDragon(this.fireDragonCount, this.enemy.randomPosition()));
+            this.fireDragonCount++;
         }
         else {
-            this.bacteria.push(new Bacteria(bacteriaCount, this.enemy.randomPosition()));
-            bacteriaCount++;
+            this.iceDragons.push(new IceDragon(iceDragonCount, this.enemy.randomPosition()));
+            iceDragonCount++;
         }
         if (this.spawnTime > 200) {
             this.spawnTime = this.spawnTime - 10;
         }
         clearInterval(this.timer);
-        this.spawnTimer(this.spawnVirus, this.spawnTime);
+        this.spawnTimer(this.spawnFireDragon, this.spawnTime);
     };
-    Level1.prototype.spawnTimer = function (spawnVirus, time) {
-        this.timer = setInterval(this.spawnVirus.bind(this), this.spawnTime);
+    Level1.prototype.spawnTimer = function (spawnFireDragon, time) {
+        this.timer = setInterval(this.spawnFireDragon.bind(this), this.spawnTime);
     };
     Level1.prototype.gameLoop = function () {
         var character1Mouth = document.getElementById("character1Mouth");
@@ -839,120 +867,55 @@ var Level1 = (function () {
         for (var i = 0; i < this.lifes.length; i++) {
             this.lifes[i].move();
         }
-        for (var i = 0; i < this.viruses.length; i++) {
+        for (var i = 0; i < this.fireDragons.length; i++) {
             var random = Math.floor(Math.random() * this.lifes.length);
+            this.fireDragons[i].counter--;
+            if (this.fireDragons[i].counter == 0) {
+                var newPosition = new Vector(this.fireDragons[i].position.x, this.fireDragons[i].position.y - 40);
+                this.fireDragons.push(new FireDragon(this.fireDragonCount, newPosition));
+                this.fireDragons[i].position.y += 40;
+                this.fireDragons[i].div.style.transform = "translate(" + this.fireDragons[i].position.x + "px, " + this.fireDragons[i].position.y + "px)";
+                this.fireDragonCount++;
+                this.fireDragons[i].counter = 300;
+            }
             if (this.lifes.length == 0) {
-                this.viruses.splice(0, this.viruses.length);
+                this.fireDragons.splice(0, this.fireDragons.length);
                 clearInterval(this.timer);
                 this.utils.removePreviousBackground();
                 new GameOver(this.scoreCount, this.playerCount);
             }
             else {
-                this.viruses[i].move(this.lifes[random]);
-                if (this.viruses[i].hitsLife(this.lifes[random]) == true) {
-                    var life = document.getElementById("" + this.lifes[random].id);
-                    life.remove();
-                    this.lifes.splice(random, 1);
-                    this.viruses[i].remove();
-                    this.viruses.splice(i, 1);
-                }
-            }
-            if (this.playerCount == 1) {
-                if (this.viruses[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.viruses[i].changeImage("url(\"../images/characters/virus2.png\")");
-                    inRange1 = true;
-                }
-                else {
-                    this.viruses[i].changeImage("url(\"../images/characters/virus1.png\")");
-                }
-                if (this.viruses[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.viruses[i].remove();
-                    this.viruses.splice(i, 1);
-                    this.scoreCount++;
-                    this.score.innerHTML = "" + this.scoreCount;
-                    this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
-                    var nomSound = new NomSound(this.randomNomNumber);
-                }
-            }
-            else {
-                if (this.viruses[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.viruses[i].changeImage("url(\"../images/characters/virus2.png\")");
-                    inRange1 = true;
-                }
-                else if (this.viruses[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
-                    this.viruses[i].changeImage("url(\"../images/characters/virus2.png\")");
-                    inRange2 = true;
-                }
-                else {
-                    this.viruses[i].changeImage("url(\"../images/characters/virus1.png\")");
-                }
-                if (this.viruses[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.viruses[i].remove();
-                    this.viruses.splice(i, 1);
-                    this.scoreCount++;
-                    this.score.innerHTML = "" + this.scoreCount;
-                    this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
-                    var nomSound = new NomSound(this.randomNomNumber);
-                }
-                else if (this.viruses[i].rectangle.hitsOtherRectangle(this.char2.rectangle)) {
-                    this.viruses[i].remove();
-                    this.viruses.splice(i, 1);
-                    this.scoreCount++;
-                    this.score.innerHTML = "" + this.scoreCount;
-                    this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
-                    var nomSound = new NomSound(this.randomNomNumber);
-                }
-            }
-        }
-        for (var i = 0; i < this.bacteria.length; i++) {
-            var random = Math.floor(Math.random() * this.lifes.length);
-            this.bacteria[i].counter--;
-            if (this.bacteria[i].counter == 0) {
-                var newPosition = new Vector(this.bacteria[i].position.x, this.bacteria[i].position.y - 40);
-                this.bacteria.push(new Bacteria(bacteriaCount, newPosition));
-                this.bacteria[i].position.y += 40;
-                this.bacteria[i].div.style.transform = "translate(" + this.bacteria[i].position.x + "px, " + this.bacteria[i].position.y + "px)";
-                bacteriaCount++;
-                this.bacteria[i].counter = 300;
-            }
-            if (this.lifes.length == 0) {
-                this.bacteria.splice(0, this.bacteria.length);
-                clearInterval(this.timer);
-                this.utils.removePreviousBackground();
-                new GameOver(this.scoreCount, this.playerCount);
-            }
-            else {
-                this.bacteria[i].move(this.lifes[0]);
-                var angle = Math.atan2(this.lifes[0].position.y - this.bacteria[i].position.y, this.lifes[0].position.x - this.bacteria[i].position.x);
+                this.fireDragons[i].move(this.lifes[0]);
+                var angle = Math.atan2(this.lifes[0].position.y - this.fireDragons[i].position.y, this.lifes[0].position.x - this.fireDragons[i].position.x);
                 angle = angle * (180 / Math.PI);
                 if (angle < 0) {
                     angle = 360 - (-angle);
                 }
-                if (this.bacteria[i].direction.x >= 0) {
-                    this.bacteria[i].div.style.transform = "translate(" + this.bacteria[i].position.x + "px, " + this.bacteria[i].position.y + "px) rotate(" + angle + "deg) scale(-1, 1)";
+                if (this.fireDragons[i].direction.x >= 0) {
+                    this.fireDragons[i].div.style.transform = "translate(" + this.fireDragons[i].position.x + "px, " + this.fireDragons[i].position.y + "px) rotate(" + angle + "deg) scale(-1, 1)";
                 }
                 else {
-                    this.bacteria[i].div.style.transform = "translate(" + this.bacteria[i].position.x + "px, " + this.bacteria[i].position.y + "px) rotate(" + angle + "deg) scale(-1, -1)";
+                    this.fireDragons[i].div.style.transform = "translate(" + this.fireDragons[i].position.x + "px, " + this.fireDragons[i].position.y + "px) rotate(" + angle + "deg) scale(-1, -1)";
                 }
             }
             if (this.playerCount == 1) {
-                if (this.bacteria[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.bacteria[i].counter > 60) {
-                    this.bacteria[i].changeImage("url(\"../images/characters/bacteria2.png\")");
+                if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.fireDragons[i].counter > 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon2.png\")");
                     inRange1 = true;
                 }
-                else if (this.bacteria[i].counter < 60 && this.bacteria[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.bacteria[i].changeImage("url(\"../images/enemy/bacteria3.png\")");
+                else if (this.fireDragons[i].counter < 60 && this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");
                     inRange1 = true;
                 }
-                else if (this.bacteria[i].counter > 60) {
-                    this.bacteria[i].changeImage("url(\"../images/characters/bacteria1.png\")");
+                else if (this.fireDragons[i].counter > 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon1.png\")");
                 }
                 else {
-                    this.bacteria[i].changeImage("url(\"../images/enemy/bacteria3.png\")");
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");
                 }
-                if (this.bacteria[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.bacteria[i].remove();
-                    this.bacteria.splice(i, 1);
+                if (this.fireDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.fireDragons[i].remove();
+                    this.fireDragons.splice(i, 1);
                     this.scoreCount++;
                     this.score.innerHTML = "" + this.scoreCount;
                     this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
@@ -961,40 +924,40 @@ var Level1 = (function () {
                 }
             }
             else {
-                if (this.bacteria[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.bacteria[i].counter > 60) {
-                    this.bacteria[i].changeImage("url(\"../images/characters/bacteria2.png\")");
+                if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.fireDragons[i].counter > 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon2.png\")");
                     inRange1 = true;
                 }
-                else if (this.bacteria[i].hitbox.hitsOtherRectangle(this.char2.rectangle) && this.bacteria[i].counter > 60) {
-                    this.bacteria[i].changeImage("url(\"../images/characters/bacteria2.png\")");
+                else if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle) && this.fireDragons[i].counter > 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon2.png\")");
                     inRange2 = true;
                 }
-                else if (this.bacteria[i].counter < 60 && this.bacteria[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.bacteria[i].changeImage("url(\"../images/enemy/bacteria3.png\")");
+                else if (this.fireDragons[i].counter < 60 && this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");
                     inRange1 = true;
                 }
-                else if (this.bacteria[i].counter < 60 && this.bacteria[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
-                    this.bacteria[i].changeImage("url(\"../images/enemy/bacteria3.png\")");
+                else if (this.fireDragons[i].counter < 60 && this.fireDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");
                     inRange2 = true;
                 }
-                else if (this.bacteria[i].counter < 60) {
-                    this.bacteria[i].changeImage("url(\"../images/enemy/bacteria3.png\")");
+                else if (this.fireDragons[i].counter < 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");
                 }
                 else {
-                    this.bacteria[i].changeImage("url(\"../images/characters/bacteria1.png\")");
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon1.png\")");
                 }
-                if (this.bacteria[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.bacteria[i].remove();
-                    this.bacteria.splice(i, 1);
+                if (this.fireDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.fireDragons[i].remove();
+                    this.fireDragons.splice(i, 1);
                     this.scoreCount++;
                     this.score.innerHTML = "" + this.scoreCount;
                     this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
                     var nomSound = new NomSound(this.randomNomNumber);
                     break;
                 }
-                else if (this.bacteria[i].rectangle.hitsOtherRectangle(this.char2.rectangle)) {
-                    this.bacteria[i].remove();
-                    this.bacteria.splice(i, 1);
+                else if (this.fireDragons[i].rectangle.hitsOtherRectangle(this.char2.rectangle)) {
+                    this.fireDragons[i].remove();
+                    this.fireDragons.splice(i, 1);
                     this.scoreCount++;
                     this.score.innerHTML = "" + this.scoreCount;
                     this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
@@ -1002,12 +965,118 @@ var Level1 = (function () {
                     break;
                 }
             }
-            if (this.bacteria[i].hitsLife(this.lifes[random]) == true) {
+            if (this.fireDragons[i].hitsLife(this.lifes[random]) == true) {
                 var life = document.getElementById("" + this.lifes[random].id);
                 life.remove();
                 this.lifes.splice(random, 1);
-                this.bacteria[i].remove();
-                this.bacteria.splice(i, 1);
+                this.fireDragons[i].remove();
+                this.fireDragons.splice(i, 1);
+            }
+        }
+        for (var i = 0; i < this.iceDragons.length; i++) {
+            var random = Math.floor(Math.random() * this.lifes.length);
+            this.iceDragons[i].counter--;
+            if (this.iceDragons[i].counter == 0) {
+                var newPosition = new Vector(this.iceDragons[i].position.x, this.iceDragons[i].position.y - 40);
+                this.iceDragons.push(new IceDragon(iceDragonCount, newPosition));
+                this.iceDragons[i].position.y += 40;
+                this.iceDragons[i].div.style.transform = "translate(" + this.iceDragons[i].position.x + "px, " + this.iceDragons[i].position.y + "px)";
+                iceDragonCount++;
+                this.iceDragons[i].counter = 300;
+            }
+            if (this.lifes.length == 0) {
+                this.iceDragons.splice(0, this.iceDragons.length);
+                clearInterval(this.timer);
+                this.utils.removePreviousBackground();
+                new GameOver(this.scoreCount, this.playerCount);
+            }
+            else {
+                this.iceDragons[i].move(this.lifes[0]);
+                var angle = Math.atan2(this.lifes[0].position.y - this.iceDragons[i].position.y, this.lifes[0].position.x - this.iceDragons[i].position.x);
+                angle = angle * (180 / Math.PI);
+                if (angle < 0) {
+                    angle = 360 - (-angle);
+                }
+                if (this.iceDragons[i].direction.x >= 0) {
+                    this.iceDragons[i].div.style.transform = "translate(" + this.iceDragons[i].position.x + "px, " + this.iceDragons[i].position.y + "px) rotate(" + angle + "deg) scale(-1, 1)";
+                }
+                else {
+                    this.iceDragons[i].div.style.transform = "translate(" + this.iceDragons[i].position.x + "px, " + this.iceDragons[i].position.y + "px) rotate(" + angle + "deg) scale(-1, -1)";
+                }
+            }
+            if (this.playerCount == 1) {
+                if (this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.iceDragons[i].counter > 60) {
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon2.png\")");
+                    inRange1 = true;
+                }
+                else if (this.iceDragons[i].counter < 60 && this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");
+                    inRange1 = true;
+                }
+                else if (this.iceDragons[i].counter > 60) {
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon1.png\")");
+                }
+                else {
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");
+                }
+                if (this.iceDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.iceDragons[i].remove();
+                    this.iceDragons.splice(i, 1);
+                    this.scoreCount++;
+                    this.score.innerHTML = "" + this.scoreCount;
+                    this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
+                    var nomSound = new NomSound(this.randomNomNumber);
+                    break;
+                }
+            }
+            else {
+                if (this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.iceDragons[i].counter > 60) {
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon2.png\")");
+                    inRange1 = true;
+                }
+                else if (this.iceDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle) && this.iceDragons[i].counter > 60) {
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon2.png\")");
+                    inRange2 = true;
+                }
+                else if (this.iceDragons[i].counter < 60 && this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");
+                    inRange1 = true;
+                }
+                else if (this.iceDragons[i].counter < 60 && this.iceDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");
+                    inRange2 = true;
+                }
+                else if (this.iceDragons[i].counter < 60) {
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");
+                }
+                else {
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon1.png\")");
+                }
+                if (this.iceDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.iceDragons[i].remove();
+                    this.iceDragons.splice(i, 1);
+                    this.scoreCount++;
+                    this.score.innerHTML = "" + this.scoreCount;
+                    this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
+                    var nomSound = new NomSound(this.randomNomNumber);
+                    break;
+                }
+                else if (this.iceDragons[i].rectangle.hitsOtherRectangle(this.char2.rectangle)) {
+                    this.iceDragons[i].remove();
+                    this.iceDragons.splice(i, 1);
+                    this.scoreCount++;
+                    this.score.innerHTML = "" + this.scoreCount;
+                    this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
+                    var nomSound = new NomSound(this.randomNomNumber);
+                    break;
+                }
+            }
+            if (this.iceDragons[i].hitsLife(this.lifes[random]) == true) {
+                var life = document.getElementById("" + this.lifes[random].id);
+                life.remove();
+                this.lifes.splice(random, 1);
+                this.iceDragons[i].remove();
+                this.iceDragons.splice(i, 1);
             }
         }
         if (this.playerCount == 1) {
@@ -1060,7 +1129,7 @@ var Level1 = (function () {
 var Life = (function () {
     function Life(id) {
         this.id = id;
-        this.div = document.createElement("redBloodCell");
+        this.div = document.createElement("villager");
         this.div.setAttribute("id", "" + this.id);
         this.div.style.transform = "translatez(0)";
         document.getElementById("background").appendChild(this.div);
@@ -1313,31 +1382,4 @@ var Vector = (function () {
     };
     return Vector;
 }());
-var Virus = (function (_super) {
-    __extends(Virus, _super);
-    function Virus(id, pos) {
-        var _this = _super.call(this, pos) || this;
-        _this.id = id;
-        _this.div = document.createElement("virus");
-        _this.div.setAttribute("id", "virus" + _this.id);
-        _this.div.style.transform = "translatez(0)";
-        document.getElementById("background").appendChild(_this.div);
-        _this.position = _this.randomPosition();
-        _this.div.style.transform = "translate(" + _this.position.x + "px, " + _this.position.y + "px)";
-        _this.random = (Math.random() * 1.5) + 0.5;
-        return _this;
-    }
-    Virus.prototype.move = function (life) {
-        this.direction = life.position.difference(this.position);
-        this.direction = this.direction.normalize();
-        this.direction = this.direction.scale(this.random);
-        this.position = this.position.add(this.direction);
-        this.div.style.transform = "translate(" + this.position.x + "px, " + this.position.y + "px)";
-        this.rectanglePosition = new Vector(this.position.x + 50, this.position.y + 50);
-        this.rectangle = new Rectangle(this.position, 75, 75);
-        this.hitboxPosition = new Vector(this.position.x + 50, this.position.y + 50);
-        this.hitbox = new Rectangle(this.hitboxPosition, 300, 300);
-    };
-    return Virus;
-}(Enemy));
 //# sourceMappingURL=main.js.map

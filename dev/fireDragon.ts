@@ -8,6 +8,7 @@ class FireDragon extends Enemy {
     public hitboxPosition: Vector;
     private rectanglePosition: Vector;
     private random:number;
+    public counter = 300;
 
     constructor(id: number, pos: Vector) {
         super(pos);

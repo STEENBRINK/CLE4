@@ -27,7 +27,7 @@ class IceDragon extends Enemy{
         this.random = Math.floor((Math.random() * 5) + 3);
         
         let random = Math.floor(Math.random() * 60);
-        this.counter = this.counter - random;
+        this.counter -= random;
         
     }
     

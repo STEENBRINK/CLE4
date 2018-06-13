@@ -121,20 +121,43 @@ class Level1 {
         //fd movement
         for (let i = 0; i < this.fireDragons.length; i++) {
             let random = Math.floor(Math.random() * this.lifes.length);
+
+            this.fireDragons[i].counter--;
+            if (this.fireDragons[i].counter == 0) {
+                let newPosition = new Vector(this.fireDragons[i].position.x, this.fireDragons[i].position.y - 40);
+                this.fireDragons.push(new FireDragon(this.fireDragonCount, newPosition));
+                this.fireDragons[i].position.y += 40;
+                this.fireDragons[i].div.style.transform = "translate(" + this.fireDragons[i].position.x + "px, " + this.fireDragons[i].position.y + "px)";
+                this.fireDragonCount++;
+                this.fireDragons[i].counter = 300;
+            }
+
+
+
+
             if (this.lifes.length == 0) {
                 this.fireDragons.splice(0, this.fireDragons.length);
                 clearInterval(this.timer);
                 this.utils.removePreviousBackground();
                 new GameOver(this.scoreCount, this.playerCount);
             } else {
-                this.fireDragons[i].move(this.lifes[random]);
-                if (this.fireDragons[i].hitsLife(this.lifes[random]) == true) {
-                    var life = document.getElementById("" + this.lifes[random].id);
-                    life.remove();
-                    this.lifes.splice(random, 1);
-                    this.fireDragons[i].remove();
-                    this.fireDragons.splice(i, 1);
+                this.fireDragons[i].move(this.lifes[0]);
+
+                let angle = Math.atan2(this.lifes[0].position.y - this.fireDragons[i].position.y, this.lifes[0].position.x - this.fireDragons[i].position.x);
+                angle = angle * (180 / Math.PI);
+
+                if (angle < 0) {
+                    angle = 360 - (-angle);
                 }
+
+                if (this.fireDragons[i].direction.x >= 0) {
+                    this.fireDragons[i].div.style.transform = "translate(" + this.fireDragons[i].position.x + "px, " + this.fireDragons[i].position.y + "px) rotate(" + angle + "deg) scale(-1, 1)";
+                } else {
+                    this.fireDragons[i].div.style.transform = "translate(" + this.fireDragons[i].position.x + "px, " + this.fireDragons[i].position.y + "px) rotate(" + angle + "deg) scale(-1, -1)";
+                }
+
+
+
             }
 
 
@@ -142,12 +165,18 @@ class Level1 {
             if (this.playerCount == 1) {
 
 
-                if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.fireDragons[i].changeImage("url(\"../images/characters/virus2.png\")");  //TODO rename
+                if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.fireDragons[i].counter > 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon2.png\")");  //TODO rename
                     inRange1 = true;
                 }
-                else {
-                    this.fireDragons[i].changeImage("url(\"../images/characters/virus1.png\")");  //TODO rename
+                else if (this.fireDragons[i].counter < 60 && this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");   //TODO rename
+                    inRange1 = true;
+                }
+                else if (this.fireDragons[i].counter > 60) {
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon1.png\")");  //TODO rename
+                } else {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");   //TODO rename
                 }
 
                 if (this.fireDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
@@ -155,24 +184,33 @@ class Level1 {
                     this.fireDragons.splice(i, 1);
                     this.scoreCount++;
                     this.score.innerHTML = "" + this.scoreCount;
-
                     this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
                     var nomSound = new NomSound(this.randomNomNumber);
+                    break;
                 }
             }
             else {
 
 
-                if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.fireDragons[i].changeImage("url(\"../images/characters/virus2.png\")");    //TODO rename
+                if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.fireDragons[i].counter > 60) {
+                    
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon2.png\")");  //TODO rename
                     inRange1 = true;
-                } else if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
-                    this.fireDragons[i].changeImage("url(\"../images/characters/virus2.png\")");    //TODO rename
+                } else if (this.fireDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle) && this.fireDragons[i].counter > 60) {
+                    
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon2.png\")");  //TODO rename
                     inRange2 = true;
+                } else if (this.fireDragons[i].counter < 60 && this.fireDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");   //TODO rename
+                    inRange1 = true;
+                } else if (this.fireDragons[i].counter < 60 && this.fireDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");   //TODO rename
+                    inRange2 = true;
+                } else if (this.fireDragons[i].counter < 60){
+                    this.fireDragons[i].changeImage("url(\"../images/enemy/firedragon3.png\")");   //TODO rename
                 } else {
-                    this.fireDragons[i].changeImage("url(\"../images/characters/virus1.png\")");    //TODO rename
+                    this.fireDragons[i].changeImage("url(\"../images/characters/firedragon1.png\")");  //TODO rename
                 }
-
 
 
                 if (this.fireDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
@@ -182,6 +220,7 @@ class Level1 {
                     this.score.innerHTML = "" + this.scoreCount;
                     this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
                     var nomSound = new NomSound(this.randomNomNumber);
+                    break;
                 }
                 else if (this.fireDragons[i].rectangle.hitsOtherRectangle(this.char2.rectangle)) {
                     this.fireDragons[i].remove();
@@ -190,10 +229,16 @@ class Level1 {
                     this.score.innerHTML = "" + this.scoreCount;
                     this.randomNomNumber = Math.floor(Math.random() * 5 + 1);
                     var nomSound = new NomSound(this.randomNomNumber);
+                    break;
                 }
 
-
-
+            }
+            if (this.fireDragons[i].hitsLife(this.lifes[random]) == true) {
+                var life = document.getElementById("" + this.lifes[random].id);
+                life.remove();
+                this.lifes.splice(random, 1);
+                this.fireDragons[i].remove();
+                this.fireDragons.splice(i, 1);
             }
 
         }
@@ -246,17 +291,17 @@ class Level1 {
 
 
                 if (this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.iceDragons[i].counter > 60) {
-                    this.iceDragons[i].changeImage("url(\"../images/characters/bacteria2.png\")");  //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon2.png\")");  //TODO rename
                     inRange1 = true;
                 }
                 else if (this.iceDragons[i].counter < 60 && this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.iceDragons[i].changeImage("url(\"../images/enemy/bacteria3.png\")");   //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");   //TODO rename
                     inRange1 = true;
                 }
                 else if (this.iceDragons[i].counter > 60) {
-                    this.iceDragons[i].changeImage("url(\"../images/characters/bacteria1.png\")");  //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon1.png\")");  //TODO rename
                 } else {
-                    this.iceDragons[i].changeImage("url(\"../images/enemy/bacteria3.png\")");   //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");   //TODO rename
                 }
 
                 if (this.iceDragons[i].rectangle.hitsOtherRectangle(this.char1.rectangle)) {
@@ -274,22 +319,22 @@ class Level1 {
 
                 if (this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle) && this.iceDragons[i].counter > 60) {
                     
-                    this.iceDragons[i].changeImage("url(\"../images/characters/bacteria2.png\")");  //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon2.png\")");  //TODO rename
                     inRange1 = true;
                 } else if (this.iceDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle) && this.iceDragons[i].counter > 60) {
                     
-                    this.iceDragons[i].changeImage("url(\"../images/characters/bacteria2.png\")");  //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon2.png\")");  //TODO rename
                     inRange2 = true;
                 } else if (this.iceDragons[i].counter < 60 && this.iceDragons[i].hitbox.hitsOtherRectangle(this.char1.rectangle)) {
-                    this.iceDragons[i].changeImage("url(\"../images/enemy/bacteria3.png\")");   //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");   //TODO rename
                     inRange1 = true;
                 } else if (this.iceDragons[i].counter < 60 && this.iceDragons[i].hitbox.hitsOtherRectangle(this.char2.rectangle)) {
-                    this.iceDragons[i].changeImage("url(\"../images/enemy/bacteria3.png\")");   //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");   //TODO rename
                     inRange2 = true;
                 } else if (this.iceDragons[i].counter < 60){
-                    this.iceDragons[i].changeImage("url(\"../images/enemy/bacteria3.png\")");   //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/enemy/icedragon3.png\")");   //TODO rename
                 } else {
-                    this.iceDragons[i].changeImage("url(\"../images/characters/bacteria1.png\")");  //TODO rename
+                    this.iceDragons[i].changeImage("url(\"../images/characters/icedragon1.png\")");  //TODO rename
                 }
 
 
