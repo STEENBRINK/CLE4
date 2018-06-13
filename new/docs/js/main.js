@@ -23,62 +23,42 @@ var GameObject = (function () {
     GameObject.prototype.getRectangle = function () {
         return this.div.getBoundingClientRect();
     };
+    GameObject.prototype.removeMe = function () {
+        this.div.remove();
+    };
     GameObject.prototype.move = function () {
         this.y += this.speedY;
         this.x += this.speedX;
+        this.draw();
+    };
+    GameObject.prototype.draw = function () {
         this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
     };
     return GameObject;
 }());
-var Ball = (function (_super) {
-    __extends(Ball, _super);
-    function Ball(x, y) {
-        var _this = _super.call(this, x, y, 1, 0, "ball") || this;
-        _this.update();
-        return _this;
-    }
-    Ball.prototype.getFutureRectangle = function () {
-        var rect = this.div.getBoundingClientRect();
-        rect.y += this.speedY;
-        return rect;
-    };
-    Ball.prototype.bounce = function () {
-        this.speedY *= -1;
-    };
-    Ball.prototype.update = function () {
-        if (this.x + 40 > window.innerWidth || this.x < 0) {
-            this.speedX *= -1;
-        }
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
-    };
-    Ball.prototype.removeMe = function () {
-        this.div.remove();
-    };
-    return Ball;
-}(GameObject));
-var Paddle = (function (_super) {
-    __extends(Paddle, _super);
-    function Paddle(x, y, upkey, downkey) {
+var Bin = (function (_super) {
+    __extends(Bin, _super);
+    function Bin(x, y, upkey, downkey) {
         var _this = _super.call(this, x, y, 0, 0, "paddle") || this;
         _this.upkey = upkey;
         _this.downkey = downkey;
-        window.addEventListener("keydown", function (e) { return _this.onKeyDown(e); });
-        window.addEventListener("keyup", function (e) { return _this.onKeyUp(e); });
+        _this.eListenerDown = function (e) { return _this.onKeyDown(e); };
+        _this.eListenerUp = function (e) { return _this.onKeyUp(e); };
+        window.addEventListener("keydown", _this.eListenerDown);
+        window.addEventListener("keyup", _this.eListenerUp);
         return _this;
     }
-    Paddle.prototype.onKeyDown = function (e) {
+    Bin.prototype.onKeyDown = function (e) {
         switch (e.keyCode) {
             case this.upkey:
-                this.speedX = -5;
+                this.speedX = -10;
                 break;
             case this.downkey:
-                this.speedX = 5;
+                this.speedX = 10;
                 break;
         }
     };
-    Paddle.prototype.onKeyUp = function (e) {
+    Bin.prototype.onKeyUp = function (e) {
         switch (e.keyCode) {
             case this.upkey:
                 this.speedX = 0;
@@ -88,16 +68,23 @@ var Paddle = (function (_super) {
                 break;
         }
     };
-    Paddle.prototype.update = function () {
+    Bin.prototype.update = function () {
         if (this.y > window.innerHeight - 100) {
             this.y = window.innerHeight - 100;
         }
         if (this.y < 0) {
             this.y = 1;
         }
-        this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
+        _super.prototype.move.call(this);
     };
-    return Paddle;
+    return Bin;
+}(GameObject));
+var Litter = (function (_super) {
+    __extends(Litter, _super);
+    function Litter(x, y) {
+        return _super.call(this, x, y, 1, 0, "ball") || this;
+    }
+    return Litter;
 }(GameObject));
 var Game = (function () {
     function Game() {
@@ -162,25 +149,25 @@ var PlayScreen = (function () {
         this.scoreElement = document.createElement('score');
         document.body.appendChild(this.scoreElement);
         this.scoreElement.innerHTML = "Score : 0";
-        this.paddle = new Paddle(window.innerWidth / 4 - 50, window.innerHeight - 100, 65, 68);
-        this.paddle2 = new Paddle(window.innerWidth / 4 * 3 - 50, window.innerHeight - 100, 37, 39);
-        this.balls = new Array;
+        this.bin1 = new Bin(window.innerWidth / 4 - 50, window.innerHeight - 100, 65, 68);
+        this.bin2 = new Bin(window.innerWidth / 4 * 3 - 50, window.innerHeight - 100, 37, 39);
+        this.litter = new Array;
         for (var i = 0; i < 40; i++) {
             setTimeout(function () { return _this.newBall(); }, 1000 * i);
         }
     }
     PlayScreen.prototype.newBall = function () {
-        this.balls.push(new Ball(Math.random() / 1.5 * window.innerWidth + 200, Math.random() / 4 * window.innerHeight));
+        this.litter.push(new Litter(Math.random() / 1.5 * window.innerWidth + 200, Math.random() / 4 * window.innerHeight));
     };
     PlayScreen.prototype.speedFaster = function () {
-        for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
             var b = _a[_i];
             b.speedY += 0.01;
         }
     };
     PlayScreen.prototype.increaseSpeed = function () {
         var _this = this;
-        for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
             var b = _a[_i];
             if (b.speedY == 1) {
                 setTimeout(function () { return _this.speedFaster(); }, 10000);
@@ -193,41 +180,43 @@ var PlayScreen = (function () {
             }
         }
     };
-    PlayScreen.prototype.checkCollision = function (a, b) {
-        return (a.left <= b.right &&
-            b.left <= a.right &&
-            a.top <= b.bottom &&
-            b.top <= a.bottom);
+    PlayScreen.prototype.checkCollision = function () {
+        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
+            var can = _a[_i];
+            if ((can.getRectangle().left < (this.bin1.getRectangle().left + this.bin1.getRectangle().width)) && ((can.getRectangle().left + can.getRectangle().width) > this.bin1.getRectangle().left)) {
+                if ((can.getRectangle().top + can.getRectangle().height) > this.bin2.getRectangle().top) {
+                    can.removeMe();
+                    this.litter.splice(this.litter.indexOf(can), 1);
+                    this.scoreElement.innerHTML = "Score : " + this.score++;
+                }
+            }
+            if ((can.getRectangle().left < (this.bin2.getRectangle().left + this.bin2.getRectangle().width)) && ((can.getRectangle().left + can.getRectangle().width) > this.bin2.getRectangle().left)) {
+                if ((can.getRectangle().top + can.getRectangle().height) > (this.bin2.getRectangle().top)) {
+                    can.removeMe();
+                    this.litter.splice(this.litter.indexOf(can), 1);
+                    this.scoreElement.innerHTML = "Score : " + this.score++;
+                }
+            }
+        }
     };
     PlayScreen.prototype.update = function () {
-        this.paddle.move();
-        this.paddle2.move();
-        this.paddle.update();
-        this.paddle2.update();
+        this.bin1.update();
+        this.bin2.update();
         this.increaseSpeed();
-        var paddleRect = this.paddle.getRectangle();
-        var paddle2Rect = this.paddle2.getRectangle();
-        for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
-            var b = _a[_i];
-            var ballRect = b.getFutureRectangle();
-            if (this.checkCollision(paddleRect, ballRect) || this.checkCollision(paddle2Rect, ballRect)) {
-                b.removeMe();
-                this.scoreElement.innerHTML = "Score : " + this.score++;
-            }
-            else {
-                b.update();
-            }
-            b.update();
-        }
+        this.checkCollision();
         this.eraseBallsBad();
+        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
+            var can = _a[_i];
+            can.move();
+        }
     };
     PlayScreen.prototype.eraseBallsBad = function () {
-        for (var i = 0; i < this.balls.length; i++) {
-            var ball = this.balls[i];
-            if (ball.y > innerHeight) {
-                ball.removeMe();
-                this.balls.splice(i, 1);
-                if (this.balls.length == 0) {
+        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
+            var i = _a[_i];
+            if (i.y > innerHeight) {
+                i.removeMe();
+                this.litter.splice(this.litter.indexOf(i), 1);
+                if (this.litter.length == 0) {
                     this.detectGameover();
                 }
             }

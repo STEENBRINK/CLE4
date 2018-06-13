@@ -1,12 +1,15 @@
 /// <reference path="gameobject.ts" /> 
  // ref typen en dan tab, control spatie dan gaat hij zoeken naar map
 
-class Paddle extends GameObject {
+class Bin extends GameObject {
     //private y: number -> staat al in parent
     //private speedY : number -> staat al in parent
 
     private downkey: number
     private upkey: number
+
+    private eListenerUp: any
+    private eListenerDown: any
 
     // private downSpeed: number = 0
     // private upSpeed: number = 0
@@ -17,17 +20,20 @@ class Paddle extends GameObject {
         this.upkey = upkey
         this.downkey = downkey
 
-        window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e))
-        window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e))
+        this.eListenerDown = (e: KeyboardEvent) => this.onKeyDown(e)
+        this.eListenerUp = (e: KeyboardEvent) => this.onKeyUp(e)
+
+        window.addEventListener("keydown", this.eListenerDown)
+        window.addEventListener("keyup", this.eListenerUp)
     }
 
     private onKeyDown(e: KeyboardEvent): void {
         switch (e.keyCode) {
             case this.upkey:
-                this.speedX = -5
+                this.speedX = -10
                 break
             case this.downkey:
-                this.speedX = 5
+                this.speedX = 10
                 break
         }
     }
@@ -44,14 +50,13 @@ class Paddle extends GameObject {
     }
 
     public update() {
-        // check of de paddle binnen beeld blijft
         if (this.y > window.innerHeight - 100){ 
-        this.y = window.innerHeight - 100;
+            this.y = window.innerHeight - 100;
         }
         if (this.y < 0 ){
-        this.y = 1
+            this.y = 1
         }
 
-        this.div.style.transform = `translate(${this.x}px, ${this.y}px)`
+        super.move()
     }
 }

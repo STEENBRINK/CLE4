@@ -1,10 +1,10 @@
-/// <reference path="ball.ts"/>
+/// <reference path="litter.ts"/>
 class PlayScreen {
 
     game:Game
-    private balls:Array<Ball>;
-    private paddle: Paddle
-    private paddle2:Paddle
+    private litter:Array<Litter>;
+    private bin1: Bin
+    private bin2:Bin
     public score:number
     private scoreElement : HTMLElement
   //  private gameover : number
@@ -17,44 +17,32 @@ class PlayScreen {
         document.body.appendChild(this.scoreElement)
         this.scoreElement.innerHTML = `Score : 0` //${this.score}
 
-        this.paddle = new Paddle(window.innerWidth / 4 - 50, window.innerHeight - 100, 65, 68)
-        this.paddle2 = new Paddle(window.innerWidth /4 * 3 - 50, window.innerHeight - 100, 37, 39)
+        this.bin1 = new Bin(window.innerWidth / 4 - 50, window.innerHeight - 100, 65, 68)
+        this.bin2 = new Bin(window.innerWidth /4 * 3 - 50, window.innerHeight - 100, 37, 39)
 
-        this.balls = new Array;
+        this.litter = new Array;
 
         for (let i : number = 0; i < 40; i++)
         { 
             //this.newBall()
             setTimeout(() => this.newBall(), 1000*i)
-        }
-        
-        // let counter = 0
-        
-        // this.ballzz()        
+        } 
 
     }
 
-    // private ballzz(){
-    //     counter++
-    //     this.newBall()
-    //     if(counter < 40){
-    //         setTimeout(() => this.ballzz(), 1000)
-    //     }
-    // }
-
     private newBall(){
-        this.balls.push(new Ball(Math.random()/ 1.5 * window.innerWidth + 200, Math.random()/4 * window.innerHeight))
+        this.litter.push(new Litter(Math.random()/ 1.5 * window.innerWidth + 200, Math.random()/4 * window.innerHeight))
     }
 
     public speedFaster(): void{
-        for ( let b of this.balls)
+        for ( let b of this.litter)
         {
             b.speedY += 0.01
         }
     }
 
     public increaseSpeed(): void{
-        for ( let b of this.balls)
+        for ( let b of this.litter)
         {
             if (b.speedY == 1){
             setTimeout(() => this.speedFaster(), 10000)
@@ -68,53 +56,48 @@ class PlayScreen {
         }
     }
 
-    checkCollision(a: ClientRect, b: ClientRect) {
-        return (a.left <= b.right &&
-            b.left <= a.right &&
-            a.top <= b.bottom &&
-            b.top <= a.bottom)
+    checkCollision():void {
+        for(let can of this.litter){
+            if((can.getRectangle().left < (this.bin1.getRectangle().left+this.bin1.getRectangle().width))&&((can.getRectangle().left+can.getRectangle().width) > this.bin1.getRectangle().left)){
+                if((can.getRectangle().top+can.getRectangle().height) > this.bin2.getRectangle().top){
+                    can.removeMe()
+                    this.litter.splice(this.litter.indexOf(can),1)
+                    this.scoreElement.innerHTML = `Score : ${this.score++}`
+                }
+            }
+            if((can.getRectangle().left < (this.bin2.getRectangle().left+this.bin2.getRectangle().width))&&((can.getRectangle().left+can.getRectangle().width) > this.bin2.getRectangle().left)){
+                if((can.getRectangle().top+can.getRectangle().height) > (this.bin2.getRectangle().top)){
+                    can.removeMe()
+                    this.litter.splice(this.litter.indexOf(can),1)
+                    this.scoreElement.innerHTML = `Score : ${this.score++}`
+                }
+            }
+        }
     }
     
+    
     public update(): void {
-        this.paddle.move()
-        this.paddle2.move()
-        this.paddle.update()
-        this.paddle2.update()
+        this.bin1.update()
+        this.bin2.update()
 
         this.increaseSpeed()
 
-        let paddleRect = this.paddle.getRectangle()
-        let paddle2Rect = this.paddle2.getRectangle()
-
-        for(let b of this.balls){
-            let ballRect = b.getFutureRectangle();
-            
-            if(this.checkCollision(paddleRect, ballRect) || this.checkCollision(paddle2Rect, ballRect)){
-              //  b.bounce()
-                b.removeMe()
-                this.scoreElement.innerHTML = `Score : ${this.score++}`
-            } else {
-                b.update() 
-            } 
-            b.update()
-        }
+        this.checkCollision()
         this.eraseBallsBad()
+
+        for(let can of this.litter){
+            can.move()
+        }
     }
 
     private eraseBallsBad(){
-        for (let i = 0; i < this.balls.length; i++) {
-            let ball = this.balls[i];
-            if (ball.y > innerHeight){
-                // verwijder het object tijdens de loop
-                ball.removeMe()
-                this.balls.splice(i,1)
-                    if (this.balls.length == 0){
+        for (let i of this.litter) {
+            if (i.y > innerHeight){
+                i.removeMe()
+                this.litter.splice(this.litter.indexOf(i),1)
+                    if (this.litter.length == 0){
                         this.detectGameover()
                     }
-                // this.gameover ++
-                //     if(this.gameover > 3){
-                //         this.detectGameover()
-                //     }
             }
         }
     }

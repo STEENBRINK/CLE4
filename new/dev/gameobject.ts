@@ -27,11 +27,19 @@ class GameObject {
         return this.div.getBoundingClientRect()
     }
 
-    public move() : void {
-        this.y += this.speedY   // Dit staat in GameObject
-        this.x += this.speedX
-        this.div.style.transform = `translate(${this.x}px, ${this.y}px)`
+    public removeMe() {
+        this.div.remove()
+    }
 
+    public move() : void {
+        this.y += this.speedY
+        this.x += this.speedX
+
+        this.draw()
+    }
+
+    private draw():void{
+        this.div.style.transform = `translate(${this.x}px, ${this.y}px)`
     }
 
 }
