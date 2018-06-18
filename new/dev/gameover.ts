@@ -13,11 +13,11 @@ class GameOverScreen {
         //Text bovenaan
         this.div = document.createElement("endgame")
         document.body.appendChild(this.div)
-        this.div.innerHTML = "GREAT JOB!"
+        this.div.innerHTML = "GOED GEDAAN!"
         //text in het midden
         this.text = document.createElement("text")
         document.body.appendChild(this.text)
-        this.text.innerHTML = "Thanks for your help!"
+        this.text.innerHTML = "BEDANKT VOOR JE HULP!"
         // score weergeven
         this.scoreElement = document.createElement('endscore')
         document.body.appendChild(this.scoreElement)
@@ -25,7 +25,7 @@ class GameOverScreen {
         // knop terug naar startscherm
         this.button = document.createElement("button")
         document.body.appendChild(this.button)
-        this.button.innerHTML = "START AGAIN"
+        this.button.innerHTML = "OPNIEUW SPELEN"
         this.button.addEventListener("click", ()=>this.buttonClicked())
     }
 

@@ -11,10 +11,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var GameObject = (function () {
     function GameObject(x, y, speedY, speedX, object) {
-        var _this = this;
         this.div = document.createElement(object);
         document.body.appendChild(this.div);
-        this.div.addEventListener('click', function () { return _this.div.remove(); });
         this.x = x;
         this.y = y;
         this.speedY = speedY;
@@ -124,16 +122,16 @@ var GameOverScreen = (function () {
         this.playScreen = p;
         this.div = document.createElement("endgame");
         document.body.appendChild(this.div);
-        this.div.innerHTML = "GREAT JOB!";
+        this.div.innerHTML = "GOED GEDAAN!";
         this.text = document.createElement("text");
         document.body.appendChild(this.text);
-        this.text.innerHTML = "Thanks for your help!";
+        this.text.innerHTML = "BEDANKT VOOR JE HULP!";
         this.scoreElement = document.createElement('endscore');
         document.body.appendChild(this.scoreElement);
         this.scoreElement.innerHTML = "Score : " + (this.playScreen.score - 1);
         this.button = document.createElement("button");
         document.body.appendChild(this.button);
-        this.button.innerHTML = "START AGAIN";
+        this.button.innerHTML = "OPNIEUW SPELEN";
         this.button.addEventListener("click", function () { return _this.buttonClicked(); });
     }
     GameOverScreen.prototype.update = function () {
@@ -235,11 +233,21 @@ var StartScreen = (function () {
         this.game = g;
         this.div = document.createElement("splash");
         document.body.appendChild(this.div);
-        this.div.innerHTML = "START THE GAME";
+        this.div.innerHTML = "START HET SPEL";
         this.click();
         this.instr = document.createElement("instruction");
         document.body.appendChild(this.instr);
-        this.instr.innerHTML = "Help save the environment by collecting all the garbage!";
+        this.instr.innerHTML = "Probeer alle schilderijern te vangen die de draak naar beneden gooit!";
+        this.keys = document.createElement("keysPlayerOne");
+        document.body.appendChild(this.keys);
+        this.keys.innerHTML = "SPELER 1";
+        this.keys = document.createElement("keyswasd");
+        document.body.appendChild(this.keys);
+        this.keys2 = document.createElement("keysPlayerTwo");
+        document.body.appendChild(this.keys2);
+        this.keys2.innerHTML = "SPELER 2";
+        this.keys2 = document.createElement("keysarrow");
+        document.body.appendChild(this.keys2);
     }
     StartScreen.prototype.click = function () {
         var _this = this;

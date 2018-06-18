@@ -12,8 +12,6 @@ class GameObject {
         this.div = document.createElement(object)
         document.body.appendChild(this.div)
 
-        this.div.addEventListener('click', () => this.div.remove())
-
         // Set position
         this.x = x
         this.y = y
