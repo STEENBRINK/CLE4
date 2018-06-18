@@ -70,26 +70,49 @@ button {
     margin-left: 38%;
 }
 
-ball {
-    /* background-image: url(../images/pokeball.png);
-    width:40px; height: 40px; */
-        /*Box*/
+litter {
         width: 48px;
-        height: 64px;
-        background: url(../images/recycle_items.png) -304px 0;
+        height: 60px;
+        background: url(../images/vincent.jpg);
+        background-size: 100% 100%;
 }
-ball [1]{
-    /* background-image: url(../images/pokeball.png);
-    width:40px; height: 40px; */
-        /*Box*/
-        width: 52px;
-        height: 64px;
-        background: url(../images/recycle_items.png) -98px 0;
+
+.litter1 {
+    width: 48px;
+    height: 60px;
+    background: url(../images/vincent.jpg);
+    background-size: 100% 100%;
 }
-.garbage1{
-    
+
+.litter2 {
+    width: 48px;
+    height: 60px;
+    background: url(../images/fridakahlo.jpg);
+    background-size: 100% 100%;
 }
-paddle {
+
+.litter3 {
+    width: 45px;
+    height: 60px;
+    background: url(../images/monalisa.jpg);
+    background-size: 100% 100%;
+}
+
+.litter4 {
+    width: 48px;
+    height: 60px;
+    background: url(../images/johannesvermeer.jpg);
+    background-size: 100% 100%;
+}
+
+.litter5 {
+    width: 70px;
+    height: 70px;
+    background: url(../images/gustavklimt.png);
+    background-size: 100% 100%;
+}
+
+bin {
     background-image: url(../images/trash2.png);
     width:100px; height:105px;
     background-size: 100% 100%;

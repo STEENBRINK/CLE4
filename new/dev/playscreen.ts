@@ -7,15 +7,13 @@ class PlayScreen {
     private bin2:Bin
     public score:number
     private scoreElement : HTMLElement
-  //  private gameover : number
     
     constructor(g:Game) {
         this.game = g
         this.score = 1
-    //    this.gameover = 0
         this.scoreElement = document.createElement('score')
         document.body.appendChild(this.scoreElement)
-        this.scoreElement.innerHTML = `Score : 0` //${this.score}
+        this.scoreElement.innerHTML = `Score : 0`
 
         this.bin1 = new Bin(window.innerWidth / 4 - 50, window.innerHeight - 100, 65, 68)
         this.bin2 = new Bin(window.innerWidth /4 * 3 - 50, window.innerHeight - 100, 37, 39)
@@ -24,14 +22,13 @@ class PlayScreen {
 
         for (let i : number = 0; i < 40; i++)
         { 
-            //this.newBall()
-            setTimeout(() => this.newBall(), 1000*i)
-        } 
+            setTimeout(() => this.newLitter(), 1000*i)
+        }       
+}
 
-    }
-
-    private newBall(){
-        this.litter.push(new Litter(Math.random()/ 1.5 * window.innerWidth + 200, Math.random()/4 * window.innerHeight))
+    private newLitter(){
+        let garbageClass = "litter"+Math.floor((Math.random()*5) + 1)
+        this.litter.push(new Litter(Math.random()/ 1.5 * window.innerWidth + 200, Math.random()/6 * window.innerHeight, garbageClass))
     }
 
     public speedFaster(): void{
@@ -83,14 +80,14 @@ class PlayScreen {
         this.increaseSpeed()
 
         this.checkCollision()
-        this.eraseBallsBad()
+        this.eraseLitterBad()
 
         for(let can of this.litter){
             can.move()
         }
     }
 
-    private eraseBallsBad(){
+    private eraseLitterBad(){
         for (let i of this.litter) {
             if (i.y > innerHeight){
                 i.removeMe()

@@ -4,7 +4,8 @@
 
 class Litter extends GameObject {
 
-    constructor(x : number, y : number) {
-        super(x, y, 1, 0, "ball") 
+    constructor(x : number, y : number, garbageClass : string) {
+        super(x, y, 1, 0, "litter") 
+        this.div.classList.add(garbageClass)
     }
 }

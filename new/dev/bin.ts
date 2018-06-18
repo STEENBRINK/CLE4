@@ -1,4 +1,4 @@
-/// <reference path="gameobject.ts" /> 
+/// <reference path="gameobject.ts"/> 
  // ref typen en dan tab, control spatie dan gaat hij zoeken naar map
 
 class Bin extends GameObject {
@@ -11,11 +11,8 @@ class Bin extends GameObject {
     private eListenerUp: any
     private eListenerDown: any
 
-    // private downSpeed: number = 0
-    // private upSpeed: number = 0
-
     constructor(x : number, y : number, upkey : number, downkey : number) {
-        super(x, y, 0, 0, "paddle") // refereert naar de class die boven jou zit, geeft de x en y van hier door naar gameobjects
+        super(x, y, 0, 0, "bin") // refereert naar de class die boven jou zit, geeft de x en y van hier door naar gameobjects
 
         this.upkey = upkey
         this.downkey = downkey

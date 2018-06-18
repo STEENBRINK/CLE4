@@ -39,7 +39,7 @@ var GameObject = (function () {
 var Bin = (function (_super) {
     __extends(Bin, _super);
     function Bin(x, y, upkey, downkey) {
-        var _this = _super.call(this, x, y, 0, 0, "paddle") || this;
+        var _this = _super.call(this, x, y, 0, 0, "bin") || this;
         _this.upkey = upkey;
         _this.downkey = downkey;
         _this.eListenerDown = function (e) { return _this.onKeyDown(e); };
@@ -81,8 +81,10 @@ var Bin = (function (_super) {
 }(GameObject));
 var Litter = (function (_super) {
     __extends(Litter, _super);
-    function Litter(x, y) {
-        return _super.call(this, x, y, 1, 0, "ball") || this;
+    function Litter(x, y, garbageClass) {
+        var _this = _super.call(this, x, y, 1, 0, "litter") || this;
+        _this.div.classList.add(garbageClass);
+        return _this;
     }
     return Litter;
 }(GameObject));
@@ -153,11 +155,12 @@ var PlayScreen = (function () {
         this.bin2 = new Bin(window.innerWidth / 4 * 3 - 50, window.innerHeight - 100, 37, 39);
         this.litter = new Array;
         for (var i = 0; i < 40; i++) {
-            setTimeout(function () { return _this.newBall(); }, 1000 * i);
+            setTimeout(function () { return _this.newLitter(); }, 1000 * i);
         }
     }
-    PlayScreen.prototype.newBall = function () {
-        this.litter.push(new Litter(Math.random() / 1.5 * window.innerWidth + 200, Math.random() / 4 * window.innerHeight));
+    PlayScreen.prototype.newLitter = function () {
+        var garbageClass = "litter" + Math.floor((Math.random() * 5) + 1);
+        this.litter.push(new Litter(Math.random() / 1.5 * window.innerWidth + 200, Math.random() / 6 * window.innerHeight, garbageClass));
     };
     PlayScreen.prototype.speedFaster = function () {
         for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
@@ -204,13 +207,13 @@ var PlayScreen = (function () {
         this.bin2.update();
         this.increaseSpeed();
         this.checkCollision();
-        this.eraseBallsBad();
+        this.eraseLitterBad();
         for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
             var can = _a[_i];
             can.move();
         }
     };
-    PlayScreen.prototype.eraseBallsBad = function () {
+    PlayScreen.prototype.eraseLitterBad = function () {
         for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
             var i = _a[_i];
             if (i.y > innerHeight) {
