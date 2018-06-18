@@ -1,5 +1,5 @@
 /// <reference path="litter.ts"/>
-/// <reference path="bin.ts"/>
+/// <reference path="knight.ts"/>
 
 class Game {
     private screen:any

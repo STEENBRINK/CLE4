@@ -5,6 +5,6 @@
 class Litter extends GameObject {
 
     constructor(x : number, y : number) {
-        super(x, y, 1, 0, "ball") 
+        super(x, y, 1, 0, "litter") 
     }
 }

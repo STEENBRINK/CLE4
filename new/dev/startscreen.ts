@@ -8,12 +8,12 @@ class StartScreen {
         this.game = g
         this.div = document.createElement("splash")
         document.body.appendChild(this.div)
-        this.div.innerHTML = "START THE GAME"
+        this.div.innerHTML = "START HET SPEL"
         this.click()
 
         this.instr = document.createElement("instruction")
         document.body.appendChild(this.instr)
-        this.instr.innerHTML = "Help save the environment by collecting all the garbage!"
+        this.instr.innerHTML = "Redt de natuur door al het afval te verzamelen"
     }
 
     private click(){
@@ -24,7 +24,6 @@ class StartScreen {
     }
 
     private splashClicked() {
-        // TODO: geef door aan 'game' dat het spel gestart moet worden
         this.game.showPlayScreen()
     }
 }
