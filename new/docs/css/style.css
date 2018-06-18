@@ -37,6 +37,40 @@ instruction{
     text-align:center;
 }
 
+keysPlayerOne{
+    font-size: 30px;
+    height: 100px;
+    width: 250px;
+    margin-top:calc(35vh - 75px);
+    margin-left:calc(20vw - 100px);
+}
+
+keysPlayerTwo{
+    font-size: 30px;
+    height:100px;
+    width: 250px;
+    margin-top:calc(35vh - 75px);
+    margin-left:calc(80vw - 100px);
+}
+
+keyswasd{
+    width: 190px;
+    height: 130px;
+    background: url(../images/keysWasd.png);
+    background-size: 100% 100%;
+    margin-top:calc(45vh - 65px);
+    margin-left:calc(20vw - 95px);
+}
+
+keysArrow{
+    width: 190px;
+    height: 130px;
+    background: url(../images/arrowkeys2.png);
+    background-size: 100% 100%;
+    margin-top:calc(45vh - 65px);
+    margin-left:calc(80vw - 95px);
+}
+
 endgame {
     font-size:1.5em;
     width:500px;
