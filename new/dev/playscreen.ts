@@ -3,7 +3,7 @@
 
 class PlayScreen {
 
-    game:Game
+    private game:Game
     private knight1: Knight
     private knight2:Knight
     public score:number
@@ -12,27 +12,30 @@ class PlayScreen {
     private currentPainting:string
     private currentPaintingElement:HTMLElement
     private currentPaintingText:HTMLElement
+    private div:HTMLElement
     
     constructor(g:Game) {
+        this.div = document.createElement("playscreen")
+        document.body.appendChild(this.div)
+
         this.currentPainting = ""
         this.currentPaintingElement = document.createElement("display")
-        document.body.appendChild(this.currentPaintingElement)
+        this.div.appendChild(this.currentPaintingElement)
         
         this.currentPaintingText = document.createElement("paintingtext")
-        document.body.appendChild(this.currentPaintingText)
+        this.div.appendChild(this.currentPaintingText)
 
         this.game = g
         this.score = 1
 
-        this.dragon = new Dragon(g)
+        this.dragon = new Dragon(g, this)
     //    this.gameover = 0
         this.scoreElement = document.createElement('score')
-        document.body.appendChild(this.scoreElement)
+        this.div.appendChild(this.scoreElement)
         this.scoreElement.innerHTML = `Score : 0` //${this.score}
 
         this.knight1 = new Knight(window.innerWidth / 4 - 50, window.innerHeight - 90, 65, 68, true, true)
         this.knight2 = new Knight(window.innerWidth /4 * 3 - 50, window.innerHeight - 90, 37, 39, false, false)
-
         
         this.currentPainting = "painting"+Math.floor((Math.random()*5) + 1)
         this.currentPaintingElement.classList.add(this.currentPainting)
@@ -45,11 +48,13 @@ class PlayScreen {
                 if((painting.getRectangle().top+painting.getRectangle().height) > this.knight2.getRectangle().top){
                     painting.removeMe()
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
-                    console.log( "1" + painting.getDiv().classList.contains(this.currentPainting))
+                    //console.log( "1" + painting.getDiv().classList.contains(this.currentPainting))
                     if(painting.getDiv().classList.contains(this.currentPainting)){
                         this.scoreElement.innerHTML = `Score : ${this.score++}`
+                        let sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false)
                     }else{
                         this.scoreElement.innerHTML = `Score : ${this.score--}`
+                        let sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false)
                     }
                 }
             }
@@ -57,7 +62,7 @@ class PlayScreen {
                 if((painting.getRectangle().top+painting.getRectangle().height) > (this.knight2.getRectangle().top)){
                     painting.removeMe()
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
-                    console.log("2" + painting.getDiv().classList.contains(this.currentPainting))
+                    //console.log("2" + painting.getDiv().classList.contains(this.currentPainting))
                     if(painting.getDiv().classList.contains(this.currentPainting)){
                         this.scoreElement.innerHTML = `Score : ${this.score++}`
                     }else{
@@ -86,7 +91,7 @@ class PlayScreen {
                 this.currentPaintingText.innerHTML = "Van Gogh"
                 break
             case "painting2":
-                this.currentPaintingText.innerHTML = "Fridakahlo" 
+                this.currentPaintingText.innerHTML = "Frida Kahlo" 
                 break
             case "painting3":
                 this.currentPaintingText.innerHTML = "Da Vinci"
@@ -100,5 +105,12 @@ class PlayScreen {
         }
 
         setTimeout(()=> this.setCurrentPainting(),10000)
+    }
+
+    public removeMe():void{
+        this.dragon.removeMe()
+        this.div.remove()
+        this.knight1.removeMe()
+        this.knight2.removeMe()
     }
 }

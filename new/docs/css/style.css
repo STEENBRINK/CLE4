@@ -22,16 +22,18 @@ body * {
 score {
     margin-left:30px;
     margin-top:50px;
+    width:250px;
 }
 
 splash {
     font-size:2em;
-    cursor: pointer;
     width:500px;
     height:100px;
     margin-top:calc(50vh - 50px);
     margin-left:calc(50vw - 250px);
     text-align:center;
+    cursor: pointer;
+    z-index: 1;
 }
 
 return {
@@ -162,7 +164,12 @@ background {
 }
 
 restart{
-    height: 30px;
+    font-size:1.5em;
+    width:500px;
+    height:100px;
+    top:calc(55vh - 200px);
+    left:calc(50vw - 250px);
+    text-align:center;
     cursor: pointer;
 }
 
@@ -187,6 +194,7 @@ paintingtext{
     top:210px;
     color:white;
     font-size: 20px;
+    width:250px;
 }
 
 display.painting1 {
@@ -224,7 +232,12 @@ credits{
 }
 
 creditlink{
-    height: 30px;
+    font-size:1.5em;
+    width:500px;
+    height:100px;
+    top:calc(55vh - 300px);
+    left:calc(50vw - 250px);
+    text-align:center;
     cursor: pointer;
 }
 

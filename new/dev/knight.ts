@@ -102,7 +102,7 @@ class Knight extends GameObject {
     public removeMe(){
         window.removeEventListener("keydown", this.eListenerDown)
         window.removeEventListener("keyup", this.eListenerUp)
-        this.div.remove()
+        super.removeMe()
     }
 
     private Animation():void{

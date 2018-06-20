@@ -9,25 +9,31 @@ class GameOverScreen {
     private creditElement:HTMLElement
     private creditEvent:any
     private restartEvent:any
+    private goedGedaan:HTMLElement
 
     constructor(p:PlayScreen, g:Game) {
         this.game = g
         this.playScreen = p
         //Text bovenaan
-        this.div = document.createElement("endgame")
+
+        
+        this.div = document.createElement("div")
         document.body.appendChild(this.div)
-        this.div.innerHTML = "GOED GEDAAN!"
+
+        this.goedGedaan = document.createElement("endgame")
+        this.div.appendChild(this.goedGedaan)
+        this.goedGedaan.innerHTML = "GOED GEDAAN!"
         //text in het midden
         this.text = document.createElement("text")
-        document.body.appendChild(this.text)
+        this.div.appendChild(this.text)
         this.text.innerHTML = "Bedankt voor het helpen!"
         // score weergeven
         this.scoreElement = document.createElement('endscore')
-        document.body.appendChild(this.scoreElement)
+        this.div.appendChild(this.scoreElement)
         this.scoreElement.innerHTML = `Score : ${this.playScreen.score - 1}`
         // restart
         this.restartElement = document.createElement('restart')
-        document.body.appendChild(this.restartElement)
+        this.div.appendChild(this.restartElement)
         this.restartElement.innerHTML = "START OPNIEUW!"
         this.restartEvent = (()=>this.buttonClicked())
         this.restartElement.addEventListener("click", this.restartEvent)
@@ -36,7 +42,7 @@ class GameOverScreen {
 
         //credits
         this.creditElement = document.createElement("creditlink")
-        document.body.appendChild(this.creditElement)
+        this.div.appendChild(this.creditElement)
         this.creditElement.innerHTML = "CREDITS"
         this.creditEvent = (()=>this.creditsClicked())
         this.creditElement.addEventListener("click", this.creditEvent)

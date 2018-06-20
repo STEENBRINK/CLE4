@@ -8,8 +8,9 @@ class Dragon extends GameObject {
     private game:Game
     private paintingCounter:number
     private counterElement:HTMLElement
+    private playscreen:PlayScreen
 
-    constructor(g:Game){
+    constructor(g:Game, p:PlayScreen){
         super(101, 100, 0, 5, "dragon")
         this.game = g
         this.paintings = new Array<Painting>();
@@ -17,6 +18,7 @@ class Dragon extends GameObject {
         this.frameCheck = true
         this.facingRight = true
         this.paintingCounter = 0
+        this.playscreen = p
 
         this.counterElement = document.createElement("countdown")
         document.body.appendChild(this.counterElement)
@@ -45,7 +47,8 @@ class Dragon extends GameObject {
         }
 
         if (this.paintings.length == 0){
-            this.game.showGameScreen()
+            this.playscreen.removeMe()
+            this.game.gameoverScreen()
         }
 
         this.increaseSpeed()
@@ -86,7 +89,7 @@ class Dragon extends GameObject {
     private createPainting(){
         let paintingClass = "painting"+Math.floor((Math.random()*5) + 1)
         this.paintings.push(new Painting(this.x, this.y, paintingClass))
-        if(this.paintingCounter < 39){
+        if(this.paintingCounter < 40){
             this.paintingCounter++
             this.counterElement.innerHTML = "Schilderijen te gaan:" + (40-this.paintingCounter)
             setTimeout(()=>this.createPainting(), (Math.random()*500+1000))
@@ -124,8 +127,12 @@ class Dragon extends GameObject {
             if (painting.y > innerHeight){
                 painting.removeMe()
                 this.paintings.splice(this.paintings.indexOf(painting),1)
-                
             }
         }
+    }
+
+    public removeMe(){
+        this.counterElement.remove()
+        super.removeMe()
     }
 }

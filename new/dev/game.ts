@@ -4,10 +4,18 @@
 class Game {
     private screen:any
     private backgroundElement : HTMLElement
+    private audioElement:HTMLElement
 
     constructor() {
         this.screen = new StartScreen(this)
         this.backgroundElement = document.createElement('background')
+
+        
+        this.audioElement = document.createElement("music")
+        document.body.appendChild(this.audioElement)
+
+        let sound = new SoundPlayer(this.audioElement, "music.mp3", true)
+
         this.gameLoop()
     }
 
@@ -15,7 +23,6 @@ class Game {
 
         // STAP 1
         // maak de BODY leeg met innerHTML = ""
-        document.body.innerHTML = "" 
         document.body.appendChild(this.backgroundElement)
 
         // STAP 2
@@ -23,14 +30,12 @@ class Game {
         this.screen = new PlayScreen(this)
     }
 
-    public showGameScreen(){
-        document.body.innerHTML = "" 
+    public gameoverScreen(){
         document.body.appendChild(this.backgroundElement)
         this.screen = new GameOverScreen(this.screen, this)
     }
 
     public startAgain(){
-        document.body.innerHTML = "" 
         document.body.appendChild(this.backgroundElement)
         this.screen = new StartScreen(this)
     }
@@ -41,9 +46,12 @@ class Game {
     }
 
     public showCredits():void{
-        document.body.innerHTML = ""
         document.body.appendChild(this.backgroundElement)
         this.screen = new Credits(this)
+    }
+
+    public getAudioElement():HTMLElement{
+        return this.audioElement
     }
 } 
 

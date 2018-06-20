@@ -28,7 +28,7 @@ var Credits = (function () {
     };
     Credits.prototype.splashClicked = function () {
         this.removeMe();
-        this.game.showPlayScreen();
+        this.game.startAgain();
     };
     Credits.prototype.removeMe = function () {
         this.div.removeEventListener("click", this.event);
@@ -66,7 +66,7 @@ var GameObject = (function () {
 }());
 var Dragon = (function (_super) {
     __extends(Dragon, _super);
-    function Dragon(g) {
+    function Dragon(g, p) {
         var _this = _super.call(this, 101, 100, 0, 5, "dragon") || this;
         _this.game = g;
         _this.paintings = new Array();
@@ -74,6 +74,7 @@ var Dragon = (function (_super) {
         _this.frameCheck = true;
         _this.facingRight = true;
         _this.paintingCounter = 0;
+        _this.playscreen = p;
         _this.counterElement = document.createElement("countdown");
         document.body.appendChild(_this.counterElement);
         _this.counterElement.innerHTML = "40";
@@ -98,7 +99,8 @@ var Dragon = (function (_super) {
             painting.move();
         }
         if (this.paintings.length == 0) {
-            this.game.showGameScreen();
+            this.playscreen.removeMe();
+            this.game.gameoverScreen();
         }
         this.increaseSpeed();
         _super.prototype.move.call(this);
@@ -141,7 +143,7 @@ var Dragon = (function (_super) {
         var _this = this;
         var paintingClass = "painting" + Math.floor((Math.random() * 5) + 1);
         this.paintings.push(new Painting(this.x, this.y, paintingClass));
-        if (this.paintingCounter < 39) {
+        if (this.paintingCounter < 40) {
             this.paintingCounter++;
             this.counterElement.innerHTML = "Schilderijen te gaan:" + (40 - this.paintingCounter);
             setTimeout(function () { return _this.createPainting(); }, (Math.random() * 500 + 1000));
@@ -179,6 +181,10 @@ var Dragon = (function (_super) {
                 this.paintings.splice(this.paintings.indexOf(painting), 1);
             }
         }
+    };
+    Dragon.prototype.removeMe = function () {
+        this.counterElement.remove();
+        _super.prototype.removeMe.call(this);
     };
     return Dragon;
 }(GameObject));
@@ -270,7 +276,7 @@ var Knight = (function (_super) {
     Knight.prototype.removeMe = function () {
         window.removeEventListener("keydown", this.eListenerDown);
         window.removeEventListener("keyup", this.eListenerUp);
-        this.div.remove();
+        _super.prototype.removeMe.call(this);
     };
     Knight.prototype.Animation = function () {
         var _this = this;
@@ -300,20 +306,20 @@ var Game = (function () {
     function Game() {
         this.screen = new StartScreen(this);
         this.backgroundElement = document.createElement('background');
+        this.audioElement = document.createElement("music");
+        document.body.appendChild(this.audioElement);
+        var sound = new SoundPlayer(this.audioElement, "music.mp3", true);
         this.gameLoop();
     }
     Game.prototype.showPlayScreen = function () {
-        document.body.innerHTML = "";
         document.body.appendChild(this.backgroundElement);
         this.screen = new PlayScreen(this);
     };
-    Game.prototype.showGameScreen = function () {
-        document.body.innerHTML = "";
+    Game.prototype.gameoverScreen = function () {
         document.body.appendChild(this.backgroundElement);
         this.screen = new GameOverScreen(this.screen, this);
     };
     Game.prototype.startAgain = function () {
-        document.body.innerHTML = "";
         document.body.appendChild(this.backgroundElement);
         this.screen = new StartScreen(this);
     };
@@ -323,9 +329,11 @@ var Game = (function () {
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
     Game.prototype.showCredits = function () {
-        document.body.innerHTML = "";
         document.body.appendChild(this.backgroundElement);
         this.screen = new Credits(this);
+    };
+    Game.prototype.getAudioElement = function () {
+        return this.audioElement;
     };
     return Game;
 }());
@@ -335,24 +343,26 @@ var GameOverScreen = (function () {
         var _this = this;
         this.game = g;
         this.playScreen = p;
-        this.div = document.createElement("endgame");
+        this.div = document.createElement("div");
         document.body.appendChild(this.div);
-        this.div.innerHTML = "GOED GEDAAN!";
+        this.goedGedaan = document.createElement("endgame");
+        this.div.appendChild(this.goedGedaan);
+        this.goedGedaan.innerHTML = "GOED GEDAAN!";
         this.text = document.createElement("text");
-        document.body.appendChild(this.text);
+        this.div.appendChild(this.text);
         this.text.innerHTML = "Bedankt voor het helpen!";
         this.scoreElement = document.createElement('endscore');
-        document.body.appendChild(this.scoreElement);
+        this.div.appendChild(this.scoreElement);
         this.scoreElement.innerHTML = "Score : " + (this.playScreen.score - 1);
         this.restartElement = document.createElement('restart');
-        document.body.appendChild(this.restartElement);
+        this.div.appendChild(this.restartElement);
         this.restartElement.innerHTML = "START OPNIEUW!";
         this.restartEvent = (function () { return _this.buttonClicked(); });
         this.restartElement.addEventListener("click", this.restartEvent);
         this.restartElement.style.top = (window.innerHeight / 2 - this.restartElement.getBoundingClientRect().height / 2 + 100) + "px";
         this.restartElement.style.left = (window.innerWidth / 2 - this.restartElement.getBoundingClientRect().width / 2) + "px";
         this.creditElement = document.createElement("creditlink");
-        document.body.appendChild(this.creditElement);
+        this.div.appendChild(this.creditElement);
         this.creditElement.innerHTML = "CREDITS";
         this.creditEvent = (function () { return _this.creditsClicked(); });
         this.creditElement.addEventListener("click", this.creditEvent);
@@ -377,16 +387,18 @@ var GameOverScreen = (function () {
 }());
 var PlayScreen = (function () {
     function PlayScreen(g) {
+        this.div = document.createElement("playscreen");
+        document.body.appendChild(this.div);
         this.currentPainting = "";
         this.currentPaintingElement = document.createElement("display");
-        document.body.appendChild(this.currentPaintingElement);
+        this.div.appendChild(this.currentPaintingElement);
         this.currentPaintingText = document.createElement("paintingtext");
-        document.body.appendChild(this.currentPaintingText);
+        this.div.appendChild(this.currentPaintingText);
         this.game = g;
         this.score = 1;
-        this.dragon = new Dragon(g);
+        this.dragon = new Dragon(g, this);
         this.scoreElement = document.createElement('score');
-        document.body.appendChild(this.scoreElement);
+        this.div.appendChild(this.scoreElement);
         this.scoreElement.innerHTML = "Score : 0";
         this.knight1 = new Knight(window.innerWidth / 4 - 50, window.innerHeight - 90, 65, 68, true, true);
         this.knight2 = new Knight(window.innerWidth / 4 * 3 - 50, window.innerHeight - 90, 37, 39, false, false);
@@ -401,12 +413,13 @@ var PlayScreen = (function () {
                 if ((painting.getRectangle().top + painting.getRectangle().height) > this.knight2.getRectangle().top) {
                     painting.removeMe();
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting), 1);
-                    console.log("1" + painting.getDiv().classList.contains(this.currentPainting));
                     if (painting.getDiv().classList.contains(this.currentPainting)) {
                         this.scoreElement.innerHTML = "Score : " + this.score++;
+                        var sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false);
                     }
                     else {
                         this.scoreElement.innerHTML = "Score : " + this.score--;
+                        var sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false);
                     }
                 }
             }
@@ -414,7 +427,6 @@ var PlayScreen = (function () {
                 if ((painting.getRectangle().top + painting.getRectangle().height) > (this.knight2.getRectangle().top)) {
                     painting.removeMe();
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting), 1);
-                    console.log("2" + painting.getDiv().classList.contains(this.currentPainting));
                     if (painting.getDiv().classList.contains(this.currentPainting)) {
                         this.scoreElement.innerHTML = "Score : " + this.score++;
                     }
@@ -441,7 +453,7 @@ var PlayScreen = (function () {
                 this.currentPaintingText.innerHTML = "Van Gogh";
                 break;
             case "painting2":
-                this.currentPaintingText.innerHTML = "Fridakahlo";
+                this.currentPaintingText.innerHTML = "Frida Kahlo";
                 break;
             case "painting3":
                 this.currentPaintingText.innerHTML = "Da Vinci";
@@ -455,7 +467,23 @@ var PlayScreen = (function () {
         }
         setTimeout(function () { return _this.setCurrentPainting(); }, 10000);
     };
+    PlayScreen.prototype.removeMe = function () {
+        this.dragon.removeMe();
+        this.div.remove();
+        this.knight1.removeMe();
+        this.knight2.removeMe();
+    };
     return PlayScreen;
+}());
+var SoundPlayer = (function () {
+    function SoundPlayer(html, name, doLoop) {
+        var audio = document.createElement("audio");
+        audio.src = "../docs/audio/" + name;
+        audio.loop = doLoop;
+        audio.play();
+        html.appendChild(audio);
+    }
+    return SoundPlayer;
 }());
 var StartScreen = (function () {
     function StartScreen(g) {

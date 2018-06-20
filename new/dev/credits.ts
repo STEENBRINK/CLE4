@@ -26,7 +26,7 @@ class Credits{
 
     private splashClicked() {
         this.removeMe()
-        this.game.showPlayScreen()
+        this.game.startAgain()
     }
 
     public removeMe(){
