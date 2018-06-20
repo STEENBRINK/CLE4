@@ -9,6 +9,33 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var Credits = (function () {
+    function Credits(g) {
+        var _this = this;
+        this.game = g;
+        this.div = document.createElement("div");
+        document.body.appendChild(this.div);
+        this.splash = document.createElement("return");
+        this.div.appendChild(this.splash);
+        this.splash.innerHTML = "TERUG NAAR HET SPEL";
+        this.event = (function () { return _this.splashClicked(); });
+        this.div.addEventListener("click", this.event);
+        this.credits = document.createElement("credits");
+        this.div.appendChild(this.credits);
+        this.credits.innerHTML = "CREDITS <br><br><br> Gemaakt Door <br> <br> Marleen van Lubeek <br> Bram Steenbrink <br><br><br> Gemaakt Voor <br> <br> Dieuwke van Woerden <br> Veerle van Woerden <br> Manouk Halderman <br><br><br> Met Dank Aan <br> <br> Bob Pikaar";
+    }
+    Credits.prototype.update = function () {
+    };
+    Credits.prototype.splashClicked = function () {
+        this.removeMe();
+        this.game.showPlayScreen();
+    };
+    Credits.prototype.removeMe = function () {
+        this.div.removeEventListener("click", this.event);
+        this.div.remove();
+    };
+    return Credits;
+}());
 var GameObject = (function () {
     function GameObject(x, y, speedY, speedX, object) {
         this.div = document.createElement(object);
@@ -32,6 +59,9 @@ var GameObject = (function () {
     GameObject.prototype.draw = function () {
         this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
     };
+    GameObject.prototype.getDiv = function () {
+        return this.div;
+    };
     return GameObject;
 }());
 var Dragon = (function (_super) {
@@ -39,17 +69,21 @@ var Dragon = (function (_super) {
     function Dragon(g) {
         var _this = _super.call(this, 101, 100, 0, 5, "dragon") || this;
         _this.game = g;
-        _this.litter = new Array();
+        _this.paintings = new Array();
         _this.currentFrame = 1;
         _this.frameCheck = true;
         _this.facingRight = true;
-        _this.litterCounter = 0;
+        _this.paintingCounter = 0;
+        _this.counterElement = document.createElement("countdown");
+        document.body.appendChild(_this.counterElement);
+        _this.counterElement.innerHTML = "40";
+        _this.counterElement.style.left = ((window.innerWidth / 2) - (_this.counterElement.getBoundingClientRect().width / 2)) + "px";
         _this.Animation();
-        _this.createLitter();
+        _this.createPainting();
         return _this;
     }
     Dragon.prototype.update = function () {
-        this.eraseBallsBad();
+        this.erasePaitnigsOutOfBounds();
         if (this.x >= window.innerWidth - this.getRectangle().width - 100 || this.x <= 100) {
             this.speedX *= -1;
         }
@@ -59,11 +93,11 @@ var Dragon = (function (_super) {
         else {
             this.facingRight = false;
         }
-        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
-            var can = _a[_i];
-            can.move();
+        for (var _i = 0, _a = this.paintings; _i < _a.length; _i++) {
+            var painting = _a[_i];
+            painting.move();
         }
-        if (this.litter.length == 0) {
+        if (this.paintings.length == 0) {
             this.game.showGameScreen();
         }
         this.increaseSpeed();
@@ -103,73 +137,85 @@ var Dragon = (function (_super) {
         }
         setTimeout(function () { return _this.Animation(); }, 180);
     };
-    Dragon.prototype.createLitter = function () {
+    Dragon.prototype.createPainting = function () {
         var _this = this;
-        this.litter.push(new Litter(this.x, this.y));
-        if (this.litterCounter < 400) {
-            setTimeout(function () { return _this.createLitter(); }, (Math.random() * 500 + 1000));
-            this.litterCounter++;
+        var paintingClass = "painting" + Math.floor((Math.random() * 5) + 1);
+        this.paintings.push(new Painting(this.x, this.y, paintingClass));
+        if (this.paintingCounter < 39) {
+            this.paintingCounter++;
+            this.counterElement.innerHTML = "Schilderijen te gaan:" + (40 - this.paintingCounter);
+            setTimeout(function () { return _this.createPainting(); }, (Math.random() * 500 + 1000));
         }
     };
     Dragon.prototype.speedFaster = function () {
-        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
-            var b = _a[_i];
-            b.speedY += 0.01;
+        for (var _i = 0, _a = this.paintings; _i < _a.length; _i++) {
+            var painting = _a[_i];
+            painting.speedY += 0.01;
         }
     };
     Dragon.prototype.increaseSpeed = function () {
         var _this = this;
-        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
-            var b = _a[_i];
-            if (b.speedY == 1) {
+        for (var _i = 0, _a = this.paintings; _i < _a.length; _i++) {
+            var painting = _a[_i];
+            if (painting.speedY == 1) {
                 setTimeout(function () { return _this.speedFaster(); }, 10000);
             }
-            if (b.speedY == 1.01) {
+            if (painting.speedY == 1.01) {
                 setTimeout(function () { return _this.speedFaster(); }, 10000);
             }
-            if (b.speedY == 1.02) {
+            if (painting.speedY == 1.02) {
                 setTimeout(function () { return _this.speedFaster(); }, 10000);
             }
         }
     };
-    Dragon.prototype.getLitter = function () {
-        return this.litter;
+    Dragon.prototype.getPaintings = function () {
+        return this.paintings;
     };
-    Dragon.prototype.eraseBallsBad = function () {
-        for (var _i = 0, _a = this.litter; _i < _a.length; _i++) {
-            var can = _a[_i];
-            if (can.y > innerHeight) {
-                can.removeMe();
-                this.litter.splice(this.litter.indexOf(can), 1);
+    Dragon.prototype.erasePaitnigsOutOfBounds = function () {
+        for (var _i = 0, _a = this.paintings; _i < _a.length; _i++) {
+            var painting = _a[_i];
+            if (painting.y > innerHeight) {
+                painting.removeMe();
+                this.paintings.splice(this.paintings.indexOf(painting), 1);
             }
         }
     };
     return Dragon;
 }(GameObject));
-var Litter = (function (_super) {
-    __extends(Litter, _super);
-    function Litter(x, y) {
-        return _super.call(this, x, y, 1, 0, "litter") || this;
+var Painting = (function (_super) {
+    __extends(Painting, _super);
+    function Painting(x, y, paintingClass) {
+        var _this = _super.call(this, x, y, 1, 0, "painting") || this;
+        _this.div.classList.add(paintingClass);
+        return _this;
     }
-    return Litter;
+    return Painting;
 }(GameObject));
 var Knight = (function (_super) {
     __extends(Knight, _super);
-    function Knight(x, y, leftkey, rightkey, facingRight) {
+    function Knight(x, y, leftkey, rightkey, facingRight, hueRotate) {
         var _this = _super.call(this, x, y, 0, 0, "knight") || this;
-        var tempHTML = document.createElement("temp");
-        document.body.appendChild(tempHTML);
+        _this.images = new Array();
         for (var i = 0; i < 18; i++) {
-            tempHTML.style.backgroundImage = "url(../docs/images/lgkw/l" + (i + 1) + ".png)";
+            _this.images.push(new Image());
+            _this.images[i].src = "images/lgkw/r" + (i + 1) + ".png";
         }
         for (var i = 0; i < 18; i++) {
-            tempHTML.style.backgroundImage = "url(../docs/images/lgkw/r" + (i + 1) + ".png)";
+            _this.images.push(new Image());
+            _this.images[i + 18].src = "images/lgkw/l" + (i + 1) + ".png";
         }
-        tempHTML.remove();
         _this.leftkey = leftkey;
         _this.rightkey = rightkey;
         _this.facingRight = facingRight;
         _this.frameCounter = 1;
+        _this.goingRight = false;
+        _this.goingLeft = false;
+        if (hueRotate) {
+            _this.div.style.webkitFilter = "hue-rotate(" + 230 + "deg)";
+        }
+        else {
+            _this.div.style.webkitFilter = "hue-rotate(" + 150 + "deg)";
+        }
         _this.eListenerDown = function (e) { return _this.onKeyDown(e); };
         _this.eListenerUp = function (e) { return _this.onKeyUp(e); };
         window.addEventListener("keydown", _this.eListenerDown);
@@ -182,21 +228,34 @@ var Knight = (function (_super) {
             case this.leftkey:
                 this.speedX = -10;
                 this.facingRight = false;
+                this.goingLeft = true;
                 break;
             case this.rightkey:
                 this.speedX = 10;
                 this.facingRight = true;
+                this.goingRight = true;
                 break;
         }
     };
     Knight.prototype.onKeyUp = function (e) {
         switch (e.keyCode) {
             case this.leftkey:
-                this.speedX = 0;
+                if (this.goingRight) {
+                    this.speedX = 10;
+                }
+                else {
+                    this.speedX = 0;
+                }
+                this.goingLeft = false;
                 break;
             case this.rightkey:
-                this.speedX = 0;
-                break;
+                if (this.goingLeft) {
+                    this.speedX = -10;
+                }
+                else {
+                    this.speedX = 0;
+                }
+                this.goingRight = false;
         }
     };
     Knight.prototype.update = function () {
@@ -216,7 +275,7 @@ var Knight = (function (_super) {
     Knight.prototype.Animation = function () {
         var _this = this;
         if (this.facingRight) {
-            this.div.style.backgroundImage = "url(../docs/images/lgkw/r" + this.frameCounter + ".png)";
+            this.div.style.backgroundImage = "url(" + this.images[this.frameCounter - 1].src + ")";
             if (this.frameCounter == 18) {
                 this.frameCounter = 1;
             }
@@ -225,7 +284,7 @@ var Knight = (function (_super) {
             }
         }
         else {
-            this.div.style.backgroundImage = "url(../docs/images/lgkw/l" + this.frameCounter + ".png)";
+            this.div.style.backgroundImage = "url(" + this.images[this.frameCounter + 17].src + ")";
             if (this.frameCounter == 18) {
                 this.frameCounter = 1;
             }
@@ -263,6 +322,11 @@ var Game = (function () {
         this.screen.update();
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
+    Game.prototype.showCredits = function () {
+        document.body.innerHTML = "";
+        document.body.appendChild(this.backgroundElement);
+        this.screen = new Credits(this);
+    };
     return Game;
 }());
 window.addEventListener("load", function () { return new Game(); });
@@ -287,42 +351,76 @@ var GameOverScreen = (function () {
         this.restartElement.addEventListener("click", this.restartEvent);
         this.restartElement.style.top = (window.innerHeight / 2 - this.restartElement.getBoundingClientRect().height / 2 + 100) + "px";
         this.restartElement.style.left = (window.innerWidth / 2 - this.restartElement.getBoundingClientRect().width / 2) + "px";
+        this.creditElement = document.createElement("creditlink");
+        document.body.appendChild(this.creditElement);
+        this.creditElement.innerHTML = "CREDITS";
+        this.creditEvent = (function () { return _this.creditsClicked(); });
+        this.creditElement.addEventListener("click", this.creditEvent);
+        this.creditElement.style.top = (window.innerHeight / 2 - this.creditElement.getBoundingClientRect().height / 2 + 200) + "px";
+        this.creditElement.style.left = (window.innerWidth / 2 - this.creditElement.getBoundingClientRect().width / 2) + "px";
     }
     GameOverScreen.prototype.update = function () {
     };
     GameOverScreen.prototype.buttonClicked = function () {
         this.restartElement.removeEventListener("click", this.restartEvent);
+        this.creditElement.removeEventListener("click", this.creditEvent);
         this.div.remove();
         this.game.startAgain();
+    };
+    GameOverScreen.prototype.creditsClicked = function () {
+        this.restartElement.removeEventListener("click", this.restartEvent);
+        this.creditElement.removeEventListener("click", this.creditEvent);
+        this.div.remove();
+        this.game.showCredits();
     };
     return GameOverScreen;
 }());
 var PlayScreen = (function () {
     function PlayScreen(g) {
+        this.currentPainting = "";
+        this.currentPaintingElement = document.createElement("display");
+        document.body.appendChild(this.currentPaintingElement);
+        this.currentPaintingText = document.createElement("paintingtext");
+        document.body.appendChild(this.currentPaintingText);
         this.game = g;
         this.score = 1;
         this.dragon = new Dragon(g);
         this.scoreElement = document.createElement('score');
         document.body.appendChild(this.scoreElement);
         this.scoreElement.innerHTML = "Score : 0";
-        this.knight1 = new Knight(window.innerWidth / 4 - 50, window.innerHeight - 250, 65, 68, true);
-        this.knight2 = new Knight(window.innerWidth / 4 * 3 - 50, window.innerHeight - 250, 37, 39, false);
+        this.knight1 = new Knight(window.innerWidth / 4 - 50, window.innerHeight - 90, 65, 68, true, true);
+        this.knight2 = new Knight(window.innerWidth / 4 * 3 - 50, window.innerHeight - 90, 37, 39, false, false);
+        this.currentPainting = "painting" + Math.floor((Math.random() * 5) + 1);
+        this.currentPaintingElement.classList.add(this.currentPainting);
+        this.setCurrentPainting();
     }
     PlayScreen.prototype.checkCollision = function () {
-        for (var _i = 0, _a = this.dragon.getLitter(); _i < _a.length; _i++) {
-            var can = _a[_i];
-            if ((can.getRectangle().left < (this.knight1.getRectangle().left + this.knight1.getRectangle().width)) && ((can.getRectangle().left + can.getRectangle().width) > this.knight1.getRectangle().left)) {
-                if ((can.getRectangle().top + can.getRectangle().height) > this.knight2.getRectangle().top) {
-                    can.removeMe();
-                    this.dragon.getLitter().splice(this.dragon.getLitter().indexOf(can), 1);
-                    this.scoreElement.innerHTML = "Score : " + this.score++;
+        for (var _i = 0, _a = this.dragon.getPaintings(); _i < _a.length; _i++) {
+            var painting = _a[_i];
+            if ((painting.getRectangle().left < (this.knight1.getRectangle().left + this.knight1.getRectangle().width)) && ((painting.getRectangle().left + painting.getRectangle().width) > this.knight1.getRectangle().left)) {
+                if ((painting.getRectangle().top + painting.getRectangle().height) > this.knight2.getRectangle().top) {
+                    painting.removeMe();
+                    this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting), 1);
+                    console.log("1" + painting.getDiv().classList.contains(this.currentPainting));
+                    if (painting.getDiv().classList.contains(this.currentPainting)) {
+                        this.scoreElement.innerHTML = "Score : " + this.score++;
+                    }
+                    else {
+                        this.scoreElement.innerHTML = "Score : " + this.score--;
+                    }
                 }
             }
-            if ((can.getRectangle().left < (this.knight2.getRectangle().left + this.knight2.getRectangle().width)) && ((can.getRectangle().left + can.getRectangle().width) > this.knight2.getRectangle().left)) {
-                if ((can.getRectangle().top + can.getRectangle().height) > (this.knight2.getRectangle().top)) {
-                    can.removeMe();
-                    this.dragon.getLitter().splice(this.dragon.getLitter().indexOf(can), 1);
-                    this.scoreElement.innerHTML = "Score : " + this.score++;
+            if ((painting.getRectangle().left < (this.knight2.getRectangle().left + this.knight2.getRectangle().width)) && ((painting.getRectangle().left + painting.getRectangle().width) > this.knight2.getRectangle().left)) {
+                if ((painting.getRectangle().top + painting.getRectangle().height) > (this.knight2.getRectangle().top)) {
+                    painting.removeMe();
+                    this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting), 1);
+                    console.log("2" + painting.getDiv().classList.contains(this.currentPainting));
+                    if (painting.getDiv().classList.contains(this.currentPainting)) {
+                        this.scoreElement.innerHTML = "Score : " + this.score++;
+                    }
+                    else {
+                        this.scoreElement.innerHTML = "Score : " + this.score--;
+                    }
                 }
             }
         }
@@ -333,27 +431,66 @@ var PlayScreen = (function () {
         this.dragon.update();
         this.checkCollision();
     };
+    PlayScreen.prototype.setCurrentPainting = function () {
+        var _this = this;
+        this.currentPaintingElement.classList.remove(this.currentPainting);
+        this.currentPainting = "painting" + Math.floor((Math.random() * 5) + 1);
+        this.currentPaintingElement.classList.add(this.currentPainting);
+        switch (this.currentPainting) {
+            case "painting1":
+                this.currentPaintingText.innerHTML = "Van Gogh";
+                break;
+            case "painting2":
+                this.currentPaintingText.innerHTML = "Fridakahlo";
+                break;
+            case "painting3":
+                this.currentPaintingText.innerHTML = "Da Vinci";
+                break;
+            case "painting4":
+                this.currentPaintingText.innerHTML = "Vermeer";
+                break;
+            case "painting5":
+                this.currentPaintingText.innerHTML = "Klimt";
+                break;
+        }
+        setTimeout(function () { return _this.setCurrentPainting(); }, 10000);
+    };
     return PlayScreen;
 }());
 var StartScreen = (function () {
     function StartScreen(g) {
-        this.game = g;
-        this.div = document.createElement("splash");
-        document.body.appendChild(this.div);
-        this.div.innerHTML = "START HET SPEL";
-        this.click();
-        this.instr = document.createElement("instruction");
-        document.body.appendChild(this.instr);
-        this.instr.innerHTML = "Redt de natuur door al het afval te verzamelen";
-    }
-    StartScreen.prototype.click = function () {
         var _this = this;
-        this.div.addEventListener("click", function () { return _this.splashClicked(); });
-    };
+        this.game = g;
+        this.div = document.createElement("div");
+        document.body.appendChild(this.div);
+        this.splash = document.createElement("splash");
+        this.div.appendChild(this.splash);
+        this.splash.innerHTML = "START HET SPEL";
+        this.event = (function () { return _this.splashClicked(); });
+        this.div.addEventListener("click", this.event);
+        this.instr = document.createElement("instruction");
+        this.div.appendChild(this.instr);
+        this.instr.innerHTML = "Probeer alle schilderijern te vangen van de schilder die je ziet!";
+        this.keys = document.createElement("keysPlayerOne");
+        this.div.appendChild(this.keys);
+        this.keys.innerHTML = "SPELER 1";
+        this.keys = document.createElement("keyswasd");
+        this.div.appendChild(this.keys);
+        this.keys2 = document.createElement("keysPlayerTwo");
+        this.div.appendChild(this.keys2);
+        this.keys2.innerHTML = "SPELER 2";
+        this.keys2 = document.createElement("keysarrow");
+        this.div.appendChild(this.keys2);
+    }
     StartScreen.prototype.update = function () {
     };
     StartScreen.prototype.splashClicked = function () {
+        this.removeMe();
         this.game.showPlayScreen();
+    };
+    StartScreen.prototype.removeMe = function () {
+        this.div.removeEventListener("click", this.event);
+        this.div.remove();
     };
     return StartScreen;
 }());

@@ -6,6 +6,8 @@ class GameOverScreen {
     private scoreElement : HTMLElement
     private text: HTMLElement
     private restartElement:HTMLElement
+    private creditElement:HTMLElement
+    private creditEvent:any
     private restartEvent:any
 
     constructor(p:PlayScreen, g:Game) {
@@ -31,6 +33,15 @@ class GameOverScreen {
         this.restartElement.addEventListener("click", this.restartEvent)
         this.restartElement.style.top = (window.innerHeight/2 - this.restartElement.getBoundingClientRect().height/2 + 100) + "px"
         this.restartElement.style.left = (window.innerWidth/2 - this.restartElement.getBoundingClientRect().width/2) + "px"
+
+        //credits
+        this.creditElement = document.createElement("creditlink")
+        document.body.appendChild(this.creditElement)
+        this.creditElement.innerHTML = "CREDITS"
+        this.creditEvent = (()=>this.creditsClicked())
+        this.creditElement.addEventListener("click", this.creditEvent)
+        this.creditElement.style.top = (window.innerHeight/2 - this.creditElement.getBoundingClientRect().height/2 + 200) + "px"
+        this.creditElement.style.left = (window.innerWidth/2 - this.creditElement.getBoundingClientRect().width/2) + "px"
     }
 
     public update(): void {
@@ -38,7 +49,15 @@ class GameOverScreen {
 
     private buttonClicked() {
         this.restartElement.removeEventListener("click", this.restartEvent)
+        this.creditElement.removeEventListener("click", this.creditEvent)
         this.div.remove()
         this.game.startAgain()
+    }
+
+    private creditsClicked() {
+        this.restartElement.removeEventListener("click", this.restartEvent)
+        this.creditElement.removeEventListener("click", this.creditEvent)
+        this.div.remove()
+        this.game.showCredits()
     }
 }

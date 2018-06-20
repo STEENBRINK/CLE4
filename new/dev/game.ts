@@ -1,4 +1,4 @@
-/// <reference path="litter.ts"/>
+/// <reference path="painting.ts"/>
 /// <reference path="knight.ts"/>
 
 class Game {
@@ -38,6 +38,12 @@ class Game {
     private gameLoop():void{
         this.screen.update()
         requestAnimationFrame(()=>this.gameLoop())
+    }
+
+    public showCredits():void{
+        document.body.innerHTML = ""
+        document.body.appendChild(this.backgroundElement)
+        this.screen = new Credits(this)
     }
 } 
 

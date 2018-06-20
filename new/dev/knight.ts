@@ -5,31 +5,44 @@ class Knight extends GameObject {
     private rightkey: number
     private leftkey: number
 
+    private goingLeft:boolean
+    private goingRight:boolean
+
     private eListenerUp: any
     private eListenerDown: any
 
     private facingRight:boolean
     private frameCounter:number
 
-    constructor(x : number, y : number, leftkey : number, rightkey : number, facingRight:boolean) {
+    private images:Array<HTMLImageElement>
+
+    constructor(x : number, y : number, leftkey : number, rightkey : number, facingRight:boolean, hueRotate:boolean) {
         super(x, y, 0, 0, "knight")
 
-        //load the images
-        let tempHTML:HTMLElement = document.createElement("temp")
-        document.body.appendChild(tempHTML)
+        this.images = new Array<HTMLImageElement>()
         for(let i:number = 0; i < 18; i++){
-            tempHTML.style.backgroundImage = "url(../docs/images/lgkw/l" + (i+1) + ".png)"
+            this.images.push(new Image())
+            this.images[i].src = "images/lgkw/r" + (i+1) + ".png"
         }
         for(let i:number = 0; i < 18; i++){
-            tempHTML.style.backgroundImage = "url(../docs/images/lgkw/r" + (i+1) + ".png)"
+            this.images.push(new Image())
+            this.images[i+18].src = "images/lgkw/l" + (i+1) + ".png"
         }
-        tempHTML.remove()
 
         this.leftkey = leftkey
         this.rightkey = rightkey
 
         this.facingRight = facingRight
         this.frameCounter = 1
+
+        this.goingRight=false
+        this.goingLeft=false
+
+        if(hueRotate){
+            this.div.style.webkitFilter = "hue-rotate(" + 230 + "deg)"
+        }else{
+            this.div.style.webkitFilter = "hue-rotate(" + 150 + "deg)"
+        }
 
         this.eListenerDown = (e: KeyboardEvent) => this.onKeyDown(e)
         this.eListenerUp = (e: KeyboardEvent) => this.onKeyUp(e)
@@ -45,10 +58,12 @@ class Knight extends GameObject {
             case this.leftkey:
                 this.speedX = -10
                 this.facingRight = false
+                this.goingLeft = true
                 break
             case this.rightkey:
                 this.speedX = 10
                 this.facingRight = true
+                this.goingRight = true
                 break
         }
     }
@@ -56,11 +71,20 @@ class Knight extends GameObject {
     private onKeyUp(e: KeyboardEvent): void {
         switch (e.keyCode) {
             case this.leftkey:
-                this.speedX = 0
+                if(this.goingRight){
+                    this.speedX = 10
+                }else{
+                    this.speedX = 0
+                }
+                this.goingLeft = false
                 break
             case this.rightkey:
-                this.speedX = 0
-                break
+                if(this.goingLeft){
+                    this.speedX = -10
+                }else{
+                    this.speedX = 0
+                }
+                this.goingRight=false
         }
     }
 
@@ -83,7 +107,8 @@ class Knight extends GameObject {
 
     private Animation():void{
         if(this.facingRight){
-            this.div.style.backgroundImage = "url(../docs/images/lgkw/r" + this.frameCounter +".png)"
+            //console.log(this.frameCounter)
+            this.div.style.backgroundImage = "url(" + this.images[this.frameCounter-1].src + ")"
             if(this.frameCounter == 18){
                 this.frameCounter = 1
             }else{
@@ -91,7 +116,7 @@ class Knight extends GameObject {
             }
                 
         }else{
-            this.div.style.backgroundImage = "url(../docs/images/lgkw/l" + this.frameCounter +".png)"
+            this.div.style.backgroundImage = "url(" + this.images[this.frameCounter+17].src + ")"
             if(this.frameCounter == 18){
                 this.frameCounter = 1
             }else{
