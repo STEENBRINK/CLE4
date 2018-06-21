@@ -44,8 +44,7 @@ class PlayScreen {
         for(let painting of this.dragon.getPaintings()){
             if((painting.getRectangle().left < (this.knight1.getRectangle().left+this.knight1.getRectangle().width))&&((painting.getRectangle().left+painting.getRectangle().width) > this.knight1.getRectangle().left)){
                 if((painting.getRectangle().top+painting.getRectangle().height) > this.knight2.getRectangle().top){
-                    this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
-                    console.log( "1: " + painting.getDiv().classList.contains("painting" + this.currentPainting))
+                    //console.log( "1: " + painting.getDiv().classList.contains("painting" + this.currentPainting))
                     if(painting.getDiv().classList.contains("painting" + this.currentPainting)){
                         this.scoreElement.innerHTML = `Score : ${this.score++}`
                         let sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false)
@@ -53,18 +52,19 @@ class PlayScreen {
                         this.scoreElement.innerHTML = `Score : ${this.score--}`
                         let sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false)
                     }
+                    this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
                     painting.removeMe()
                 }
             }
             if((painting.getRectangle().left < (this.knight2.getRectangle().left+this.knight2.getRectangle().width))&&((painting.getRectangle().left+painting.getRectangle().width) > this.knight2.getRectangle().left)){
                 if((painting.getRectangle().top+painting.getRectangle().height) > (this.knight2.getRectangle().top)){
-                    this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
-                    console.log("2: " + painting.getDiv().classList.contains("painting"+ this.currentPainting))
+                    //console.log("2: " + painting.getDiv().classList.contains("painting"+ this.currentPainting))
                     if(painting.getDiv().classList.contains("painting" + this.currentPainting)){
                         this.scoreElement.innerHTML = `Score : ${this.score++}`
                     }else{
                         this.scoreElement.innerHTML = `Score : ${this.score--}`
                     }
+                    this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
                     painting.removeMe()
                 }
             }
@@ -82,7 +82,7 @@ class PlayScreen {
     private setCurrentPainting(){
         this.currentPaintingElement.classList.remove("painting" + this.currentPainting)
         this.currentPainting = Math.floor((Math.random()*5) + 1)
-        console.log(this.currentPainting)
+        //console.log(this.currentPainting)
         this.currentPaintingElement.classList.add("painting" + this.currentPainting)
 
         switch(this.currentPainting){
