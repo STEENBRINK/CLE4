@@ -353,7 +353,7 @@ var GameOverScreen = (function () {
         this.text.innerHTML = "Bedankt voor het helpen!";
         this.scoreElement = document.createElement('endscore');
         this.div.appendChild(this.scoreElement);
-        this.scoreElement.innerHTML = "Score : " + (this.playScreen.score - 1);
+        this.scoreElement.innerHTML = "Score : " + this.playScreen.score;
         this.restartElement = document.createElement('restart');
         this.div.appendChild(this.restartElement);
         this.restartElement.innerHTML = "START OPNIEUW!";
@@ -394,7 +394,7 @@ var PlayScreen = (function () {
         this.currentPaintingText = document.createElement("paintingtext");
         this.div.appendChild(this.currentPaintingText);
         this.game = g;
-        this.score = 1;
+        this.score = 0;
         this.dragon = new Dragon(g, this);
         this.scoreElement = document.createElement('score');
         this.div.appendChild(this.scoreElement);
@@ -411,11 +411,13 @@ var PlayScreen = (function () {
             if ((painting.getRectangle().left < (this.knight1.getRectangle().left + this.knight1.getRectangle().width)) && ((painting.getRectangle().left + painting.getRectangle().width) > this.knight1.getRectangle().left)) {
                 if ((painting.getRectangle().top + painting.getRectangle().height) > this.knight2.getRectangle().top) {
                     if (painting.getDiv().classList.contains("painting" + this.currentPainting)) {
-                        this.scoreElement.innerHTML = "Score : " + this.score++;
+                        this.score++;
+                        this.scoreElement.innerHTML = "Score : " + this.score;
                         var sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false);
                     }
                     else {
-                        this.scoreElement.innerHTML = "Score : " + this.score--;
+                        this.score--;
+                        this.scoreElement.innerHTML = "Score : " + this.score;
                         var sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false);
                     }
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting), 1);
@@ -425,10 +427,14 @@ var PlayScreen = (function () {
             if ((painting.getRectangle().left < (this.knight2.getRectangle().left + this.knight2.getRectangle().width)) && ((painting.getRectangle().left + painting.getRectangle().width) > this.knight2.getRectangle().left)) {
                 if ((painting.getRectangle().top + painting.getRectangle().height) > (this.knight2.getRectangle().top)) {
                     if (painting.getDiv().classList.contains("painting" + this.currentPainting)) {
-                        this.scoreElement.innerHTML = "Score : " + this.score++;
+                        this.score++;
+                        this.scoreElement.innerHTML = "Score : " + this.score;
+                        var sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false);
                     }
                     else {
-                        this.scoreElement.innerHTML = "Score : " + this.score--;
+                        this.score--;
+                        this.scoreElement.innerHTML = "Score : " + this.score;
+                        var sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false);
                     }
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting), 1);
                     painting.removeMe();

@@ -30,7 +30,7 @@ class GameOverScreen {
         // score weergeven
         this.scoreElement = document.createElement('endscore')
         this.div.appendChild(this.scoreElement)
-        this.scoreElement.innerHTML = `Score : ${this.playScreen.score - 1}`
+        this.scoreElement.innerHTML = `Score : ${this.playScreen.score}`
         // restart
         this.restartElement = document.createElement('restart')
         this.div.appendChild(this.restartElement)

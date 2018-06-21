@@ -24,7 +24,7 @@ class PlayScreen {
         this.div.appendChild(this.currentPaintingText)
 
         this.game = g
-        this.score = 1
+        this.score = 0
 
         this.dragon = new Dragon(g, this)
     //    this.gameover = 0
@@ -46,10 +46,12 @@ class PlayScreen {
                 if((painting.getRectangle().top+painting.getRectangle().height) > this.knight2.getRectangle().top){
                     //console.log( "1: " + painting.getDiv().classList.contains("painting" + this.currentPainting))
                     if(painting.getDiv().classList.contains("painting" + this.currentPainting)){
-                        this.scoreElement.innerHTML = `Score : ${this.score++}`
+                        this.score++
+                        this.scoreElement.innerHTML = `Score : ${this.score}`
                         let sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false)
                     }else{
-                        this.scoreElement.innerHTML = `Score : ${this.score--}`
+                        this.score--
+                        this.scoreElement.innerHTML = `Score : ${this.score}`
                         let sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false)
                     }
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
@@ -60,9 +62,13 @@ class PlayScreen {
                 if((painting.getRectangle().top+painting.getRectangle().height) > (this.knight2.getRectangle().top)){
                     //console.log("2: " + painting.getDiv().classList.contains("painting"+ this.currentPainting))
                     if(painting.getDiv().classList.contains("painting" + this.currentPainting)){
-                        this.scoreElement.innerHTML = `Score : ${this.score++}`
+                        this.score++
+                        this.scoreElement.innerHTML = `Score : ${this.score}`
+                        let sound = new SoundPlayer(this.game.getAudioElement(), "painting_good.wav", false)
                     }else{
-                        this.scoreElement.innerHTML = `Score : ${this.score--}`
+                        this.score--
+                        this.scoreElement.innerHTML = `Score : ${this.score}`
+                        let sound = new SoundPlayer(this.game.getAudioElement(), "painting_bad.wav", false)
                     }
                     this.dragon.getPaintings().splice(this.dragon.getPaintings().indexOf(painting),1)
                     painting.removeMe()
